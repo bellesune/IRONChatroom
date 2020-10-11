@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button } from "./Button";
 
 export function Input() {
-  const [text, setText] = React.useState([]);
+  const [text, setText] = React.useState("");
   
   const handleText = (event) => {
     const newText = event.target.value;
