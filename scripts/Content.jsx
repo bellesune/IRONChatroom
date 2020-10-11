@@ -1,7 +1,4 @@
-    
 import * as React from 'react';
-
-
 import { Button } from './Button';
 import { Socket } from './Socket';
 
@@ -24,7 +21,8 @@ export function Content() {
             <h1>USPS Addresses!</h1>
                 <ol>
                     {
-                    // TODO
+                    addresses.map((address, index) => 
+                    <li key={index}>{address}</li>)
                     }
                 </ol>
             <Button />
