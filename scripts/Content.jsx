@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from './Button';
+import { Input } from './Input';
 import { Socket } from './Socket';
 
 export function Content() {
@@ -10,7 +10,7 @@ export function Content() {
             Socket.on('message received', (data) => {
                 console.log("Received message from server: " + data['allMessages']);
                 setAddresses(data['allMessages']);
-            })
+            });
         });
     }
     
@@ -18,14 +18,14 @@ export function Content() {
 
     return (
         <div>
-            <h1>USPS Addresses!</h1>
+            <h1>Your messages:</h1>
                 <ol>
                     {
                     addresses.map((address, index) => 
                     <li key={index}>{address}</li>)
                     }
                 </ol>
-            <Button />
+            <Input />
         </div>
     );
 }
