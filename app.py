@@ -37,9 +37,17 @@ def emit_all_messages(channel):
     all_messages = [db_message.address for db_message in db.session.query(models.Usps).all()]
     socketio.emit(channel, {'allMessages': all_messages})
 
+def count():
+    user_count = 0
+    user_count += 1
+    return user_count
+
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
+
+    print(count())
+    
     socketio.emit('connected', {
         'test': 'Connected'
     })
