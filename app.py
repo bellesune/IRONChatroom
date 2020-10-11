@@ -50,11 +50,27 @@ def on_connect():
 def on_disconnect():
     print ('Someone disconnected!')
 
+def bot_commands(command):
+    command_response = ""
+    
+    if command == "!! about":
+        command_response = "HELLO I'M BOT"
+
+    elif command == "!! help":
+        command_response = "YOU NEED HELP?"
+        
+    return command_response
+
 @socketio.on('new message input')
 def on_new_address(data):
     print("Got an event for new address input with data:", data)
     
     db.session.add(models.Usps(data['message']));
+
+    if data['message'][:2] == "!!":
+        bot_response = bot_commands(data['message'])
+        db.session.add(models.Usps(bot_response));
+        
     db.session.commit();
     
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
