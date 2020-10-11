@@ -7,7 +7,7 @@ import flask_sqlalchemy
 import flask_socketio
 import models 
 
-ADDRESSES_RECEIVED_CHANNEL = 'addresses received'
+ADDRESSES_RECEIVED_CHANNEL = 'message received'
 
 app = flask.Flask(__name__)
 
@@ -36,7 +36,7 @@ db.session.commit()
 
 def emit_all_addresses(channel):
     all_addresses = [db_address.address for db_address in db.session.query(models.Usps).all()]
-    socketio.emit(channel, {'allAddresses': all_addresses})
+    socketio.emit(channel, {'allMessages': all_addresses})
 
 @socketio.on('connect')
 def on_connect():
@@ -51,11 +51,11 @@ def on_connect():
 def on_disconnect():
     print ('Someone disconnected!')
 
-@socketio.on('new address input')
+@socketio.on('new message input')
 def on_new_address(data):
     print("Got an event for new address input with data:", data)
     
-    db.session.add(models.Usps(data['address']));
+    db.session.add(models.Usps(data['message']));
     db.session.commit();
     
     emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)

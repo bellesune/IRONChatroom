@@ -7,9 +7,9 @@ export function Content() {
     
     function getNewAddresses() {
         React.useEffect(() => {
-            Socket.on('addresses received', (data) => {
-                console.log("Received addresses from server: " + data['allAddresses']);
-                setAddresses(data['allAddresses']);
+            Socket.on('message received', (data) => {
+                console.log("Received message from server: " + data['allMessages']);
+                setAddresses(data['allMessages']);
             })
         });
     }
