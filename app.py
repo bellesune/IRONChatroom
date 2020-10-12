@@ -10,7 +10,7 @@ import random
 import requests
 
 MESSAGES_RECEIVED_CHANNEL = 'message received'
-
+USER_COUNT = 0
 
 app = flask.Flask(__name__)
 
@@ -39,7 +39,7 @@ db.session.commit()
 
 def emit_all_messages(channel):
     all_messages = [db_message.message for db_message in db.session.query(models.Chatbox).all()]
-    socketio.emit(channel, {'allMessages': all_messages})
+    socketio.emit(channel, {'allMessages': all_messages, 'user_count': USER_COUNT })
     
 def create_username():
     user = ""
@@ -85,17 +85,13 @@ def bot_commands(command):
         
     return "IronBot: " + command_response
     
-def user_count():
-    USER_COUNT = 0
-    USER_COUNT += 1
-    
-    return USER_COUNT
-    
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
     
     print(USERNAME, "connected to the chat!")
+    global USER_COUNT 
+    USER_COUNT += 1
     
     socketio.emit('connected', {
         'test': 'Connected'
@@ -107,6 +103,9 @@ def on_connect():
 def on_disconnect():
     print ('Someone disconnected!')
     print(USERNAME, "connected to the chat!")
+    
+    global USER_COUNT 
+    USER_COUNT -= 1
     
 @socketio.on('new message input')
 def on_new_message(data):
