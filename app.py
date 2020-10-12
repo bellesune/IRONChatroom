@@ -6,8 +6,10 @@ import flask
 import flask_sqlalchemy
 import flask_socketio
 import models 
+import random
 
 MESSAGES_RECEIVED_CHANNEL = 'message received'
+
 
 app = flask.Flask(__name__)
 
@@ -33,30 +35,23 @@ db.app = app
 db.create_all()
 db.session.commit()
 
+
 def emit_all_messages(channel):
     all_messages = [db_message.address for db_message in db.session.query(models.Usps).all()]
     socketio.emit(channel, {'allMessages': all_messages})
-
-def count():
-    user_count = 0
-    user_count += 1
-    return user_count
-
-@socketio.on('connect')
-def on_connect():
-    print('Someone connected!')
-
-    print(count())
     
-    socketio.emit('connected', {
-        'test': 'Connected'
-    })
+def create_username():
+    user = ""
     
-    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+    username_list = ["Ant-Man", "Black Panther", "Captain America", "Hawkeye", \
+    "Hulk", "Iron Man", "Spider-Man","Thor", "Black Widow"]
+    random_name = random.choice(username_list)
+    random_num = random.randint(1,10000)
+    user += random_name + str(random_num)
+    
+    return user
 
-@socketio.on('disconnect')
-def on_disconnect():
-    print ('Someone disconnected!')
+USERNAME = create_username()
 
 def bot_commands(command):
     command_response = ""
@@ -67,13 +62,38 @@ def bot_commands(command):
     elif command == "!! help":
         command_response = "YOU NEED HELP?"
         
-    return command_response
+    return "IronBot: " + command_response
+    
+def user_count():
+    USER_COUNT = 0
+    USER_COUNT += 1
+    
+    return USER_COUNT
+    
+@socketio.on('connect')
+def on_connect():
+    print('Someone connected!')
+    
+    print(USERNAME, "connected to the chat!")
+    
+    socketio.emit('connected', {
+        'test': 'Connected'
+    })
+    
+    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
 
+@socketio.on('disconnect')
+def on_disconnect():
+    print ('Someone disconnected!')
+    print(USERNAME, "connected to the chat!")
+    
 @socketio.on('new message input')
 def on_new_address(data):
     print("Got an event for new address input with data:", data)
     
-    db.session.add(models.Usps(data['message']));
+    user_message = USERNAME + ": " + data['message']
+    
+    db.session.add(models.Usps(user_message));
 
     if data['message'][:2] == "!!":
         bot_response = bot_commands(data['message'])

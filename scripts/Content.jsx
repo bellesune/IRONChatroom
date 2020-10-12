@@ -18,7 +18,6 @@ export function Content() {
 
     return (
         <div>
-            
             <h1>Your messages:</h1>
                 <ol>
                     {
