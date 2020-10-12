@@ -37,7 +37,7 @@ db.session.commit()
 
 
 def emit_all_messages(channel):
-    all_messages = [db_message.address for db_message in db.session.query(models.Usps).all()]
+    all_messages = [db_message.message for db_message in db.session.query(models.Chatbox).all()]
     socketio.emit(channel, {'allMessages': all_messages})
     
 def create_username():
@@ -88,16 +88,16 @@ def on_disconnect():
     print(USERNAME, "connected to the chat!")
     
 @socketio.on('new message input')
-def on_new_address(data):
-    print("Got an event for new address input with data:", data)
+def on_new_message(data):
+    print("Got an event for new message input with data:", data)
     
     user_message = USERNAME + ": " + data['message']
     
-    db.session.add(models.Usps(user_message));
+    db.session.add(models.Chatbox(user_message));
 
     if data['message'][:2] == "!!":
         bot_response = bot_commands(data['message'])
-        db.session.add(models.Usps(bot_response));
+        db.session.add(models.Chatbox(bot_response));
         
     db.session.commit();
     
