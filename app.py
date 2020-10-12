@@ -11,6 +11,7 @@ import requests
 
 MESSAGES_RECEIVED_CHANNEL = 'message received'
 USER_COUNT = 0
+USER_LIST = []
 
 app = flask.Flask(__name__)
 
@@ -85,13 +86,23 @@ def bot_commands(command):
         
     return "IronBot: " + command_response
     
+def count_user(user, connection):
+    global USER_COUNT 
+    
+    if user not in USER_LIST and connection == "connected":
+        USER_LIST.append(user)
+        USER_COUNT += 1
+        
+    elif user in USER_LIST and connection == "disconnected":
+        USER_LIST.remove(user)
+        USER_COUNT -= 1
+    
 @socketio.on('connect')
 def on_connect():
-    print('Someone connected!')
-    
-    print(USERNAME, "connected to the chat!")
-    global USER_COUNT 
-    USER_COUNT += 1
+    global USERNAME
+
+    print(USERNAME, "connected")
+    count_user(USERNAME, "connected")
     
     socketio.emit('connected', {
         'test': 'Connected'
@@ -101,11 +112,10 @@ def on_connect():
 
 @socketio.on('disconnect')
 def on_disconnect():
-    print ('Someone disconnected!')
-    print(USERNAME, "connected to the chat!")
-    
-    global USER_COUNT 
-    USER_COUNT -= 1
+    global USERNAME
+
+    print(USERNAME, "disconnected")
+    count_user(USERNAME, "disconnected")
     
 @socketio.on('new message input')
 def on_new_message(data):
