@@ -7,6 +7,7 @@ import flask_sqlalchemy
 import flask_socketio
 import models 
 import random
+import requests
 
 MESSAGES_RECEIVED_CHANNEL = 'message received'
 
@@ -53,6 +54,20 @@ def create_username():
 
 USERNAME = create_username()
 
+def translate_command(text):
+    translated_text = ""
+    
+    url = "https://api.funtranslations.com/translate/shakespeare.json?text={}".format(text)
+    response = requests.get(url)
+    json_body = response.json()
+    
+    try:
+        translated_text = json_body['contents']['translated']
+    except KeyError:
+        translated_text = "My apologies, our translator is currently on break. Try again later!"
+    
+    return translated_text
+
 def bot_commands(command):
     command_response = ""
     
@@ -61,6 +76,12 @@ def bot_commands(command):
 
     elif command == "!! help":
         command_response = "YOU NEED HELP?"
+    
+    elif command[:15] == "!! funtranslate":
+        command_response = translate_command(command[16:])
+        
+    else:
+        command_response = "I cannot understand your command"
         
     return "IronBot: " + command_response
     
