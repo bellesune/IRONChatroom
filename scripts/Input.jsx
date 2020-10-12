@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Button } from "./Button";
 
 export function Input(props) {
-  console.log("THIS IS INPUT")
   const [text, setText] = React.useState("");
   
   const handleText = (event) => {
