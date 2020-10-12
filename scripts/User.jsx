@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Button } from "./Button";
 
-export function User() {
+export function User(props) {
+  console.log("THIS IS USER")
   const [name, setName] = React.useState("Louis");
   
   const handleText = (event) => {
     const newName = event.target.value;
     setName(newName);
-  
+    
   };
 
   return (
@@ -17,7 +18,7 @@ export function User() {
         value={name}
         onChange={handleText}
       />
-      <Button text={name} />
+      <Button name={name} />
     </div>
   );
 }

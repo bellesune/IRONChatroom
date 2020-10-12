@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Button } from "./Button";
 
-export function Input() {
+export function Input(props) {
+  console.log("THIS IS INPUT")
   const [text, setText] = React.useState("");
   
   const handleText = (event) => {
@@ -13,7 +14,7 @@ export function Input() {
   return (
     <div>
       <input
-        placeholder="Enter items here"
+        placeholder="Enter message"
         value={text}
         onChange={handleText}
       />
