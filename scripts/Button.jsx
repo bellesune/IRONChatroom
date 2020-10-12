@@ -1,17 +1,19 @@
 import * as React from 'react';
 import { Socket } from './Socket';
+import { Input } from './Input';
 
 export function Button(props) {
     
     const handleSubmit = (event) => {
-        let newAddress = props.text;
-        
-        console.log('User added a message: ', newAddress);
-        
-        Socket.emit('new message input', { 'message': newAddress });
-        
-        console.log('Sent the address ' + newAddress + ' to server!');
-    };
+        let newText = props.text;
+       
+        console.log(`User added a message "${newText}"`)
+       
+        Socket.emit('new message input', { 
+            'message': newText
+        });
+        console.log(`Sent the message "${newText}" to the server`)
+}
 
     return (
         <button onClick={handleSubmit}>Send!</button>

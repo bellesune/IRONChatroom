@@ -25,7 +25,7 @@ export function Content() {
                     <li key={index}>{address}</li>)
                     }
                 </ol>
-            <Input />
+            <Input/>
         </div>
     );
 }
