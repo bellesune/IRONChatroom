@@ -43,7 +43,6 @@ db.app = app
 db.create_all()
 db.session.commit()
 
-
 def emit_all_messages(channel):
     all_messages = [db_message.message for db_message in db.session.query(models.Chatbox).all()]
     socketio.emit(channel, {'allMessages': all_messages, 'user_count': USER_COUNT })
@@ -63,6 +62,10 @@ def create_username(name):
 
 AVENGER = random_name()
 USERNAME = create_username(AVENGER)
+
+def bot_about():
+    return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
+            I'm here to help you to navigate through the chatroom, Type '!! help' to view my commands."
 
 def bot_help():
     help_command = ""
@@ -100,7 +103,6 @@ def bot_whoami(query):
     
 def bot_active_users():
     active_users = ""
-    
     for user in USER_LIST:
         active_users += user + ", "
     
@@ -110,7 +112,7 @@ def bot_commands(avenger, command):
     command_response = ""
     
     if command == "!! about":
-        command_response = "HELLO I'M BOT"
+        command_response = bot_about()
 
     elif command == "!! help":
         command_response = bot_help()
@@ -125,7 +127,7 @@ def bot_commands(avenger, command):
         command_response = bot_active_users()
         
     else:
-        command_response = "I cannot understand your command"
+        command_response = "Can you repeat that? I can't understand your command."
         
     return "IronBot: " + command_response
     
@@ -165,7 +167,6 @@ def on_new_message(data):
     print("Got an event for new message input with data:", data)
     
     user_message = USERNAME + ": " + data['message']
-    
     db.session.add(models.Chatbox(user_message));
 
     if data['message'][:2] == "!!":
