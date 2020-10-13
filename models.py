@@ -4,7 +4,7 @@ from app import db
 
 class Chatbox(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.String(120))
+    message = db.Column(db.String(500))
     
     def __init__(self, msg):
         self.message = msg

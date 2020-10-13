@@ -53,18 +53,18 @@ def random_name():
     avenger_name = random.choice(username_list)
     
     return avenger_name
-
-AVENGER = random_name()
     
 def create_username(name):
     user = ""
-    name = random_name()
     random_num = random.randint(1,10000)
     user += name + str(random_num)
     
     return user
 
+AVENGER = random_name()
+print(AVENGER)
 USERNAME = create_username(AVENGER)
+print(USERNAME)
 
 def translate_command(text):
     translated_text = ""
