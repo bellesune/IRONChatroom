@@ -62,11 +62,9 @@ def create_username(name):
     return user
 
 AVENGER = random_name()
-print(AVENGER)
 USERNAME = create_username(AVENGER)
-print(USERNAME)
 
-def translate_command(text):
+def bot_translate_command(text):
     translated_text = ""
     
     url = "https://api.funtranslations.com/translate/shakespeare.json?text={}".format(text)
@@ -81,13 +79,20 @@ def translate_command(text):
     return translated_text
     
 def bot_whoami(query):
-    print(query)
     url = "http://gateway.marvel.com/v1/public/characters?name={}&ts=1&apikey={}&hash={}".format(query,marvel_public,marvel_private)
     response = requests.get(url)
     json_body = response.json()
     
     description = json_body['data']['results'][0]['description']
     return description
+    
+def bot_active_users():
+    active_users = ""
+    
+    for user in USER_LIST:
+        active_users += user + ", "
+    
+    return "You are talking to " + active_users
 
 def bot_commands(avenger, command):
     command_response = ""
@@ -99,10 +104,13 @@ def bot_commands(avenger, command):
         command_response = "YOU NEED HELP?"
     
     elif command[:15] == "!! funtranslate":
-        command_response = translate_command(command[16:])
+        command_response = bot_translate_command(command[16:])
         
     elif command == "!! whoami":
         command_response = bot_whoami(avenger)
+        
+    elif command == "!! users":
+        command_response = bot_active_users()
         
     else:
         command_response = "I cannot understand your command"
