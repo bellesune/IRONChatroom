@@ -3,11 +3,6 @@ import { Input } from './Input';
 import { Socket } from './Socket';
 
 
-const activeUserStyle = {
-    fontFamily: 'Roboto',
-    color: 'red',
-};
-
 export function Content() {
     const [messages, setMessage] = React.useState([]);
     const [count, setCount] = React.useState(0);
@@ -37,10 +32,10 @@ export function Content() {
 
     return (
         <div class="body">
-            <h1 id="title">IRON Chatroom</h1>
-            <h4 id="subtitle">Instant Real-time Online Navigator</h4>
+            <div id="title">IRON Chatroom</div>
+            <div id="subtitle">Instant Real-time Online Navigator</div>
             
-            <h3 id="users" style={activeUserStyle}>Active users: {count}</h3>
+            <div id="activeUsers">Active users: {count}</div>
                 <div class="messagesGrid">
                     {
                     messages.map((message, index) => 

@@ -12,7 +12,7 @@ export function Input(props) {
 
   return (
     <div>
-      <input
+      <textarea
         placeholder="Enter message"
         value={text}
         onChange={handleText}
