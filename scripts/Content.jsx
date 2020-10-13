@@ -1,45 +1,12 @@
 import * as React from 'react';
 import { Input } from './Input';
 import { Socket } from './Socket';
-// import bg from './bg.jpg';
 
-const bodyStyle = {
-    textAlign: 'center',
-};
 
 const activeUserStyle = {
     fontFamily: 'Roboto',
-    color: 'thistle',
+    color: 'red',
 };
-
-const titleStyle = {
-    fontFamily: 'Serif',
-    color: 'rgb(212, 111, 212)'
-};
-
-const messagesGrid = {
-    textAlign: 'left',
-    backgroundColor: 'papayaWhip',
-    opacity: '0.83',
-    borderRadius: '15px',
-    width: '65%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    padding: '28px',
-    // backgroundImage: {bg},
-    // backgroundPosition: 'center',
-    // backgroundSize: 'cover',
-};
-
-const messageCard = {
-    borderRadius: '15px',
-    padding: '10px',
-    color: 'black',
-    backgroundColor: 'white',
-    marginTop: '10px',
-    margin: '10px',
-};
-
 
 export function Content() {
     const [messages, setMessage] = React.useState([]);
@@ -69,15 +36,15 @@ export function Content() {
     getNewMessages();
 
     return (
-        <div style={bodyStyle}>
-            <h1 style={titleStyle}>IRON Chatroom</h1>
+        <div class="body">
+            <h1 id="title">IRON Chatroom</h1>
             <h4 id="subtitle">Instant Real-time Online Navigator</h4>
             
-            <h3 style={activeUserStyle}>Active users: {count}</h3>
-                <div style={messagesGrid}>
+            <h3 id="users" style={activeUserStyle}>Active users: {count}</h3>
+                <div class="messagesGrid">
                     {
                     messages.map((message, index) => 
-                    <div style={messageCard} key={index}>
+                    <div id="messageCard" key={index}>
                         {message}
                     </div>)
                     }
