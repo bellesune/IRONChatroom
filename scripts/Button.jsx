@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Socket } from './Socket';
-import { Input } from './Input';
 
 export function Button(props) {
     
@@ -16,6 +15,6 @@ export function Button(props) {
 }
 
     return (
-        <button onClick={handleSubmit}>Send!</button>
+        <button onClick={handleSubmit}>Send</button>
     );
 }

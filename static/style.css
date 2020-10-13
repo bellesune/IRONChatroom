@@ -7,25 +7,25 @@
     font-family: 'BenchNine';
     font-size: 18px;
     color: black;
+    background-color: #000207;
 }
 
 #title {
     font-family: 'Marvel';
-    font-size: 60px;
+    font-size: 85px;
     font-weight: 700;
-    color: rgb(212, 111, 212);
-    margin-top: 35px;
+    color: #0E5883;
 }
 
 #subtitle {
-    color: blue;
+    color: #00544B;
     font-size: 22px;
     margin-bottom: 35px;
 }
 
 #activeUsers {
-    color: purple;
-    font-size: 20px;
+    color: #1A76A5;
+    font-size: 18px;
     margin-bottom: 10px;
 }
 
@@ -56,11 +56,18 @@
     margin: 10px;
 }
 
-textarea {
-    color: red;
-    height: 90px;
-    /*widthL 320px;*/
-    width: 65%;
-    margin-left: auto;
-    margin-right: auto;
+input {
+    color: #012A40;
+    width: 70%;
+    height: 60px;
+    margin-bottom: 60px;
+    padding-right: 50px;
+    border-radius: 10px;
+}
+
+button {
+    width: 70px;
+    height: 60px;
+    margin-left: -70px;
+    border-radius: 10px;
 }

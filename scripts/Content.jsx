@@ -2,11 +2,9 @@ import * as React from 'react';
 import { Input } from './Input';
 import { Socket } from './Socket';
 
-
 export function Content() {
     const [messages, setMessage] = React.useState([]);
     const [count, setCount] = React.useState(0);
-    const [bot, setBot] = React.useState([]);
     
     function getNewMessages() {
         React.useEffect(() => {
@@ -14,16 +12,6 @@ export function Content() {
                 console.log(`Received message from server: ${data['allMessages']}`)
                 setMessage(data['allMessages']);
                 setCount(data['user_count']);
-                // console.log("THIS IS ",data['allMessages'].slice(0,7))
-                
-                // for (let i=0; i<data['allMessages'].length; i++){
-                //     if (data['allMessages'][i].slice(0,7) === "IronBot"){
-                        // setBot(data['allMessages'][i])
-                        // console.log(data['allMessages'][i])
-                        
-                //     }    
-                // }
-                
             });
         });
     }
@@ -31,12 +19,12 @@ export function Content() {
     getNewMessages();
 
     return (
-        <div class="body">
+        <div className="body">
             <div id="title">IRON Chatroom</div>
             <div id="subtitle">Instant Real-time Online Navigator</div>
             
             <div id="activeUsers">Active users: {count}</div>
-                <div class="messagesGrid">
+                <div className="messagesGrid">
                     {
                     messages.map((message, index) => 
                     <div id="messageCard" key={index}>

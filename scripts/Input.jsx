@@ -12,8 +12,8 @@ export function Input(props) {
 
   return (
     <div>
-      <textarea
-        placeholder="Enter message"
+      <input 
+        placeholder="Enter message here"
         value={text}
         onChange={handleText}
       />
