@@ -92,7 +92,7 @@ def bot_active_users():
     for user in USER_LIST:
         active_users += user + ", "
     
-    return "You are talking to " + active_users
+    return "Active users in the chat are " + active_users
 
 def bot_commands(avenger, command):
     command_response = ""
