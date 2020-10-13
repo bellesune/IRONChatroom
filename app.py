@@ -21,9 +21,15 @@ socketio.init_app(app, cors_allowed_origins="*")
 dotenv_path = join(dirname(__file__), 'sql.env')
 load_dotenv(dotenv_path)
 
+dotenv_path2 = join(dirname(__file__), 'marvel.env')
+load_dotenv(dotenv_path2)
+
 sql_user = os.environ['SQL_USER']
 sql_pwd = os.environ['SQL_PASSWORD']
 dbuser = os.environ['USER']
+
+marvel_public = os.environ['MARVEL_PUBLIC']
+marvel_private = os.environ['MARVEL_PRIVATE']
 
 database_uri = 'postgresql://{}:{}@localhost/postgres'.format(
     sql_user, sql_pwd)
@@ -42,18 +48,23 @@ def emit_all_messages(channel):
     all_messages = [db_message.message for db_message in db.session.query(models.Chatbox).all()]
     socketio.emit(channel, {'allMessages': all_messages, 'user_count': USER_COUNT })
     
-def create_username():
-    user = ""
+def random_name():
+    username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
+    avenger_name = random.choice(username_list)
     
-    username_list = ["Ant-Man", "Black Panther", "Captain America", "Hawkeye", \
-    "Hulk", "Iron Man", "Spider-Man","Thor", "Black Widow"]
-    random_name = random.choice(username_list)
+    return avenger_name
+
+AVENGER = random_name()
+    
+def create_username(name):
+    user = ""
+    name = random_name()
     random_num = random.randint(1,10000)
-    user += random_name + str(random_num)
+    user += name + str(random_num)
     
     return user
 
-USERNAME = create_username()
+USERNAME = create_username(AVENGER)
 
 def translate_command(text):
     translated_text = ""
@@ -68,8 +79,17 @@ def translate_command(text):
         translated_text = "My apologies, our translator is currently on break. Try again later!"
     
     return translated_text
+    
+def bot_whoami(query):
+    print(query)
+    url = "http://gateway.marvel.com/v1/public/characters?name={}&ts=1&apikey={}&hash={}".format(query,marvel_public,marvel_private)
+    response = requests.get(url)
+    json_body = response.json()
+    
+    description = json_body['data']['results'][0]['description']
+    return description
 
-def bot_commands(command):
+def bot_commands(avenger, command):
     command_response = ""
     
     if command == "!! about":
@@ -80,6 +100,9 @@ def bot_commands(command):
     
     elif command[:15] == "!! funtranslate":
         command_response = translate_command(command[16:])
+        
+    elif command == "!! whoami":
+        command_response = bot_whoami(avenger)
         
     else:
         command_response = "I cannot understand your command"
@@ -126,7 +149,7 @@ def on_new_message(data):
     db.session.add(models.Chatbox(user_message));
 
     if data['message'][:2] == "!!":
-        bot_response = bot_commands(data['message'])
+        bot_response = bot_commands(AVENGER, data['message'])
         db.session.add(models.Chatbox(bot_response));
         
     db.session.commit();
