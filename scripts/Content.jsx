@@ -21,7 +21,7 @@ export function Content() {
     return (
         <div className="body">
             <div id="title">IRON Chatroom</div>
-            <div id="subtitle">Instant Real-time Online Navigator</div>
+            <div id="subtitle">Instant Real-time Online Notification</div>
             
             <div id="activeUsers">Active users: {count}</div>
                 <div className="messagesGrid">
