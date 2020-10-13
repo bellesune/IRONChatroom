@@ -64,6 +64,18 @@ def create_username(name):
 AVENGER = random_name()
 USERNAME = create_username(AVENGER)
 
+def bot_help():
+    help_command = ""
+    
+    all_commands = ["!! about", "!! help", "!! funtranslate", "!! whoami", "!! users"]
+    commands_info = ["get to know me", "lists all the commands", "I also speak Shakespeare",\
+                    "know more about your avenger name", "list of all active users"]
+    
+    for i in range(0, len(all_commands)):
+        help_command += all_commands[i] + " - " + commands_info[i] + "\n"
+    
+    return help_command
+
 def bot_translate_command(text):
     translated_text = ""
     
@@ -101,7 +113,7 @@ def bot_commands(avenger, command):
         command_response = "HELLO I'M BOT"
 
     elif command == "!! help":
-        command_response = "YOU NEED HELP?"
+        command_response = bot_help()
     
     elif command[:15] == "!! funtranslate":
         command_response = bot_translate_command(command[16:])
