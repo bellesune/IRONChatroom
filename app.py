@@ -13,6 +13,7 @@ MESSAGES_RECEIVED_CHANNEL = 'message received'
 USER_COUNT = 0
 USER_LIST = []
 USERNAME = ""
+AVENGER = ""
 
 app = flask.Flask(__name__)
 
@@ -56,9 +57,6 @@ def create_username(name):
     
     return user
     
-# AVENGER = random_name()
-# USERNAME = create_username(AVENGER)
-
 def bot_about():
     return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
             I'm here to help you to navigate through the chatroom, Type '!! help' to view my commands."
@@ -129,21 +127,23 @@ def bot_commands(avenger, command):
     
 def count_user(user, connection):
     global USER_COUNT 
+    global USER_LIST
     
     if user not in USER_LIST and connection == "connected":
         USER_LIST.append(user)
         USER_COUNT += 1
         
-    elif user in USER_LIST and connection == "disconnected":
+    if user in USER_LIST and connection == "disconnected":
         USER_LIST.remove(user)
         USER_COUNT -= 1
     
 @socketio.on('connect')
 def on_connect():
     global USERNAME 
+    global AVENGER
     
-    avenger = random_name()
-    USERNAME = create_username(avenger)
+    AVENGER = random_name()
+    USERNAME = create_username(AVENGER)
 
     print(USERNAME, "connected")
     count_user(USERNAME, "connected")
@@ -156,6 +156,7 @@ def on_connect():
 
 @socketio.on('disconnect')
 def on_disconnect():
+    global USERNAME
 
     print(USERNAME, "disconnected")
     count_user(USERNAME, "disconnected")
