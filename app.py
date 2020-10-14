@@ -12,6 +12,7 @@ import requests
 MESSAGES_RECEIVED_CHANNEL = 'message received'
 USER_COUNT = 0
 USER_LIST = []
+USERNAME = ""
 
 app = flask.Flask(__name__)
 
@@ -54,9 +55,9 @@ def create_username(name):
     user += name + str(random_num)
     
     return user
-
-AVENGER = random_name()
-USERNAME = create_username(AVENGER)
+    
+# AVENGER = random_name()
+# USERNAME = create_username(AVENGER)
 
 def bot_about():
     return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
@@ -139,7 +140,10 @@ def count_user(user, connection):
     
 @socketio.on('connect')
 def on_connect():
-    global USERNAME
+    global USERNAME 
+    
+    avenger = random_name()
+    USERNAME = create_username(avenger)
 
     print(USERNAME, "connected")
     count_user(USERNAME, "connected")
@@ -152,7 +156,6 @@ def on_connect():
 
 @socketio.on('disconnect')
 def on_disconnect():
-    global USERNAME
 
     print(USERNAME, "disconnected")
     count_user(USERNAME, "disconnected")
