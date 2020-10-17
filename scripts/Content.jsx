@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Input } from './Input';
 import { Socket } from './Socket';
+import { GoogleButton } from './GoogleButton';
 
 export function Content() {
     const [messages, setMessage] = React.useState([]);
@@ -22,6 +23,7 @@ export function Content() {
         <div className="body">
             <div id="title">IRON Chatroom</div>
             <div id="subtitle">Instant Real-time Online Notification</div>
+            <GoogleButton />
             
             <div id="activeUsers">Active users: {count}</div>
                 <div className="messagesGrid">
