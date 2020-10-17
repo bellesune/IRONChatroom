@@ -16,9 +16,6 @@ class Chatbot:
         self.command = command
         self.avenger = avenger
         
-    # def setAvenger(self, avenger):
-    #     self.avenger = avenger
-        
     def about(self):
         return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
                 I'm here to help you to navigate through the chatroom, \

@@ -24,12 +24,6 @@ socketio.init_app(app, cors_allowed_origins="*")
 dotenv_path = join(dirname(__file__), 'sql.env')
 load_dotenv(dotenv_path)
 
-# dotenv_path2 = join(dirname(__file__), 'marvel.env')
-# load_dotenv(dotenv_path2)
-
-# marvel_public = os.environ['MARVEL_PUBLIC']
-# marvel_private = os.environ['MARVEL_PRIVATE']
-
 database_uri = os.environ['DATABASE_URL']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
