@@ -2,6 +2,8 @@
 from os.path import join, dirname
 from dotenv import load_dotenv
 from bot import Chatbot
+from flask import request
+from flask_socketio import join_room, leave_room
 import os
 import flask
 import flask_sqlalchemy
@@ -81,6 +83,7 @@ def count_user(user, connection):
     
 @socketio.on('connect')
 def on_connect():
+    
     global USERNAME 
     global AVENGER
     
@@ -98,6 +101,7 @@ def on_connect():
 
 @socketio.on('disconnect')
 def on_disconnect():
+    print(request.sid)
     global USERNAME
 
     print(USERNAME, "disconnected")
@@ -122,7 +126,14 @@ def on_new_message(data):
 @socketio.on('new google user')
 def on_new_google_user(data):
     print("Got an event for new google user input with data:", data)
+    
+    username = data['name']
+    room = "login"
+    join_room(room)
+    print(username + ' has entered the room ' + room)
+    
     push_new_user_to_db(data['name'], data['email'], models.AuthUserType.GOOGLE)
+    
     
 @app.route('/')
 def index():
