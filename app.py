@@ -58,74 +58,6 @@ def create_username(name):
     
     return user
     
-# def bot_about():
-#     return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
-#             I'm here to help you to navigate through the chatroom, Type '!! help' to view my commands."
-
-# def bot_help():
-#     help_command = ""
-    
-#     all_commands = ["!! about", "!! help", "!! funtranslate", "!! whoami", "!! users"]
-#     commands_info = ["get to know me", "lists all the commands", "I also speak Shakespeare",\
-#                     "know more about your avenger name", "list of all active users"]
-    
-#     for i in range(0, len(all_commands)):
-#         help_command += all_commands[i] + " - " + commands_info[i] + "\n"
-    
-#     return help_command
-
-# def bot_translate_command(text):
-#     translated_text = ""
-    
-#     url = "https://api.funtranslations.com/translate/shakespeare.json?text={}".format(text)
-#     response = requests.get(url)
-#     json_body = response.json()
-    
-#     try:
-#         translated_text = json_body['contents']['translated']
-#     except KeyError:
-#         translated_text = "My apologies, our translator is currently on break. Try again later!"
-    
-#     return translated_text
-    
-# def bot_whoami(query):
-#     url = "http://gateway.marvel.com/v1/public/characters?name={}&ts=1&apikey={}&hash={}".format(query,marvel_public,marvel_private)
-#     response = requests.get(url)
-#     json_body = response.json()
-    
-#     description = json_body['data']['results'][0]['description']
-#     return description
-    
-# def bot_active_users():
-#     active_users = ""
-#     for user in USER_LIST:
-#         active_users += user + ", "
-    
-#     return "Active users in the chat are " + active_users
-
-# def bot_commands(avenger, command):
-#     command_response = ""
-    
-#     if command == "!! about":
-#         command_response = bot_about()
-
-#     elif command == "!! help":
-#         command_response = bot_help()
-    
-#     elif command[:15] == "!! funtranslate":
-#         command_response = bot_translate_command(command[16:])
-        
-#     elif command == "!! whoami":
-#         command_response = bot_whoami(avenger)
-        
-#     elif command == "!! users":
-#         command_response = bot_active_users()
-        
-#     else:
-#         command_response = "Can you repeat that? I can't understand your command."
-        
-#     return "IronBot: " + command_response
-    
 def count_user(user, connection):
     global USER_COUNT 
     global USER_LIST
@@ -170,14 +102,12 @@ def on_new_message(data):
     db.session.add(models.Chatbox(user_message));
 
     if data['message'][:2] == "!!":
-        # bot_response = Chatbot.commands(AVENGER, data['message'])
         bot = Chatbot(data['message'])
         bot_response = bot.getResponse()
-        
         db.session.add(models.Chatbox(bot_response));
         
     db.session.commit();
-    
+
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
 
 @app.route('/')

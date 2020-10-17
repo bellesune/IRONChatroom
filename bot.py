@@ -7,6 +7,9 @@ class Chatbot:
         self.command = command
         self.avenger = ""
         
+    def set_avenger(self, avenger):
+        self.avenger = avenger
+        
     def about(self):
         return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
                 I'm here to help you to navigate through the chatroom, \
@@ -67,8 +70,9 @@ class Chatbot:
         elif self.command[:15] == "!! funtranslate":
             command_response = self.translate(self.command[16:])
             
+        #TODO pass avenger name
         elif self.command == "!! whoami":
-            command_response = self.whoami(avenger)
+            command_response = self.whoami(self.avenger)
             
         elif self.command == "!! users":
             command_response = self.getActiveUsers()
@@ -77,7 +81,3 @@ class Chatbot:
             command_response = "Can you repeat that? I can't understand your command."
             
         return command_response
-        
-        
-    def set_avenger(self, avenger):
-        self.avenger = avenger
