@@ -1,14 +1,23 @@
+from os.path import join, dirname
+from dotenv import load_dotenv
+import os
 import requests
+
+dotenv_path = join(dirname(__file__), 'marvel.env')
+load_dotenv(dotenv_path)
+
+marvel_public = os.environ['MARVEL_PUBLIC']
+marvel_private = os.environ['MARVEL_PRIVATE']
 
 class Chatbot:
     name = "IronBot"
     
-    def __init__(self, command):
+    def __init__(self, command, avenger):
         self.command = command
-        self.avenger = ""
-        
-    def set_avenger(self, avenger):
         self.avenger = avenger
+        
+    # def setAvenger(self, avenger):
+    #     self.avenger = avenger
         
     def about(self):
         return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
@@ -80,4 +89,4 @@ class Chatbot:
         else:
             command_response = "Can you repeat that? I can't understand your command."
             
-        return command_response
+        return self.name + ': ' +command_response

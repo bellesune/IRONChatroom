@@ -24,11 +24,11 @@ socketio.init_app(app, cors_allowed_origins="*")
 dotenv_path = join(dirname(__file__), 'sql.env')
 load_dotenv(dotenv_path)
 
-dotenv_path2 = join(dirname(__file__), 'marvel.env')
-load_dotenv(dotenv_path2)
+# dotenv_path2 = join(dirname(__file__), 'marvel.env')
+# load_dotenv(dotenv_path2)
 
-marvel_public = os.environ['MARVEL_PUBLIC']
-marvel_private = os.environ['MARVEL_PRIVATE']
+# marvel_public = os.environ['MARVEL_PUBLIC']
+# marvel_private = os.environ['MARVEL_PRIVATE']
 
 database_uri = os.environ['DATABASE_URL']
 
@@ -102,7 +102,7 @@ def on_new_message(data):
     db.session.add(models.Chatbox(user_message));
 
     if data['message'][:2] == "!!":
-        bot = Chatbot(data['message'])
+        bot = Chatbot(data['message'], AVENGER)
         bot_response = bot.getResponse()
         db.session.add(models.Chatbox(bot_response));
         
