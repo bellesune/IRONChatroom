@@ -1,16 +1,18 @@
 import requests
 
 class Chatbot:
+    name = "IronBot"
     
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, command):
+        self.command = command
+        self.avenger = ""
         
     def about(self):
         return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
                 I'm here to help you to navigate through the chatroom, \
                 Type '!! help' to view my commands."
     
-    def bot_help(self):
+    def getHelp(self):
         help_command = ""
         
         all_commands = ["!! about", "!! help", "!! funtranslate", "!! whoami", "!! users"]
@@ -22,7 +24,7 @@ class Chatbot:
         
         return help_command
     
-    def translate_command(self, text):
+    def translate(self, text):
         translated_text = ""
         
         url = "https://api.funtranslations.com/translate/shakespeare.json?text={}".format(text)
@@ -46,33 +48,36 @@ class Chatbot:
         description = json_body['data']['results'][0]['description']
         return description
         
-    def active_users(self):
+    def getActiveUsers(self):
         active_users = ""
         for user in USER_LIST:
             active_users += user + ", "
         
         return "Active users in the chat are " + active_users
     
-    def commands(self, avenger, command):
+    def getResponse(self):
         command_response = ""
         
-        if command == "!! about":
+        if self.command == "!! about":
             command_response = self.about()
     
-        elif command == "!! help":
-            command_response = self.bot_help()
+        elif self.command == "!! help":
+            command_response = self.getHelp()
         
-        elif command[:15] == "!! funtranslate":
-            command_response = self.translate_command(command[16:])
+        elif self.command[:15] == "!! funtranslate":
+            command_response = self.translate(self.command[16:])
             
-        elif command == "!! whoami":
+        elif self.command == "!! whoami":
             command_response = self.whoami(avenger)
             
-        elif command == "!! users":
-            command_response = self.active_users()
+        elif self.command == "!! users":
+            command_response = self.getActiveUsers()
             
         else:
             command_response = "Can you repeat that? I can't understand your command."
             
-        return self.name + ": " + command_response
+        return command_response
         
+        
+    def set_avenger(self, avenger):
+        self.avenger = avenger

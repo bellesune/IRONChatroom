@@ -170,7 +170,10 @@ def on_new_message(data):
     db.session.add(models.Chatbox(user_message));
 
     if data['message'][:2] == "!!":
-        bot_response = Chatbot.commands(AVENGER, data['message'])
+        # bot_response = Chatbot.commands(AVENGER, data['message'])
+        bot = Chatbot(data['message'])
+        bot_response = bot.getResponse()
+        
         db.session.add(models.Chatbox(bot_response));
         
     db.session.commit();
