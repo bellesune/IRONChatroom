@@ -7,10 +7,12 @@ import flask
 import flask_sqlalchemy
 import flask_socketio
 import models 
+import auth
 import random
 import requests
 
 MESSAGES_RECEIVED_CHANNEL = 'message received'
+USERS_UPDATED_CHANNEL = 'users updated'
 USER_COUNT = 0
 USER_LIST = []
 USERNAME = ""
@@ -31,13 +33,27 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
-
 db.create_all()
 db.session.commit()
 
 def emit_all_messages(channel):
     all_messages = [db_message.message for db_message in db.session.query(models.Chatbox).all()]
     socketio.emit(channel, {'allMessages': all_messages, 'user_count': USER_COUNT })
+    
+def emit_all_oauth_users(channel):
+    all_users = [user.name for user in db.session.query(models.AuthUser).all()]
+    all_auth = [user.auth_type for user in db.session.query(models.AuthUser).all()]
+    
+    socketio.emit(channel, {
+        'allUsers': all_users,
+        'allAuth': all_auth,
+    })
+
+def push_new_user_to_db(name, email, auth_type):
+    db.session.add(models.AuthUser(name, email, auth_type));
+    db.session.commit();
+        
+    emit_all_oauth_users(USERS_UPDATED_CHANNEL)
     
 def random_name():
     username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
@@ -103,7 +119,12 @@ def on_new_message(data):
     db.session.commit();
 
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-
+    
+@socketio.on('new google user')
+def on_new_google_user(data):
+    print("Got an event for new google user input with data:", data)
+    push_new_user_to_db(data['name'], data['email'], models.AuthUserType.GOOGLE)
+    
 @app.route('/')
 def index():
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)

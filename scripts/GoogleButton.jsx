@@ -3,7 +3,7 @@ import { Socket } from './Socket';
 import { GoogleLogin } from 'react-google-login';
 
 function handleGoogleOAuthLogin(response) {
-    console.log(response);
+    console.log("Google auth reached.");
  
     let name = response.profileObj.name;
     let email = response.profileObj.email;
