@@ -7,7 +7,6 @@ import flask
 import flask_sqlalchemy
 import flask_socketio
 import models 
-import auth
 import random
 import requests
 
