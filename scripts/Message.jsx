@@ -15,6 +15,15 @@ export function Message(props) {
           </div>
         );
       }
+      else if (type[i] === 'html'){
+        newMessages.push(
+          <div style={divStyle} id="messageCard">
+            <a href={props.passMessage[i]} target="_blank">
+              {props.passMessage[i]}
+            </a>  
+          </div>
+        );
+      }
       else{
         newMessages.push(
           <div style={divStyle} id="messageCard">

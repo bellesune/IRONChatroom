@@ -133,17 +133,20 @@ def on_new_message(data):
         
     else:
         if 'http' in msg:
-            response = requests.get(msg) 
+            extractor = URLExtract()
+            urls = extractor.find_urls(msg)
+            response = requests.get(urls[0]) 
             url_msg = response.url
             type_msg = response.headers['Content-Type']
             
-            if type_msg == 'text/html':
+            if 'text/html' in type_msg:
                 TYPE = "html"
                 
             if 'image' in type_msg:
                 TYPE = "jpg"
         
-            user_message = USERNAME + ": " + url_msg
+            user_message = USERNAME + ": " + msg
+            print(TYPE)
             
         db.session.add(models.Chatbox(TYPE, user_message));
 
