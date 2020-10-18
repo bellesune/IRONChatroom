@@ -5,6 +5,7 @@ from bot import Chatbot
 from flask import request
 from flask_socketio import join_room, leave_room
 from urlextract import URLExtract
+from urllib.parse import urlparse
 import os
 import flask
 import flask_sqlalchemy
@@ -122,6 +123,7 @@ def on_new_message(data):
         db.session.add(models.Chatbox(bot_response));
         
     if 'http' in msg:
+        # url = urlparse(msg)
         # a_url = ""
         # extractor = URLExtract()
         # url = extractor.find_urls(msg)
@@ -132,7 +134,11 @@ def on_new_message(data):
         # print(new_msg)
         new_msg = 'https://www.wikipedia.org'
         response = requests.get(new_msg) 
-        db.session.add(models.Chatbox(response.url));
+        url_msg = response.url
+        type_msg = response.headers['Content-Type']
+        print(response.url)
+        print(response.headers['Content-Type'])
+        db.session.add(models.Chatbox(url_msg));
 
         
     db.session.commit();

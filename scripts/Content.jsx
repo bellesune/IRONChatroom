@@ -6,6 +6,7 @@ import { GoogleButton } from './GoogleButton';
 export function Content() {
     const [messages, setMessage] = React.useState([]);
     const [count, setCount] = React.useState(0);
+    const [isLink, setLink] = React.useState(false);
     
     function getNewMessages() {
         React.useEffect(() => {
@@ -34,8 +35,11 @@ export function Content() {
                     {
                     messages.map((message, index) => 
                     <div id="messageCard" key={index}>
+                        {
+                        isLink && <a href={message} target="_blank">
+                            {message}
+                        </a>}
                         {message}
-                        {}
                     </div>)
                     }
                 </div>
