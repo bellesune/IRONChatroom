@@ -6,15 +6,15 @@ import { GoogleButton } from './GoogleButton';
 export function Content() {
     const [messages, setMessage] = React.useState([]);
     const [count, setCount] = React.useState(0);
-    const [isLink, setLink] = React.useState(false);
-    
+    const [type, setType] = React.useState([]);
+
     function getNewMessages() {
         React.useEffect(() => {
             Socket.on('message received', (data) => {
-                console.log(data)
-                console.log(`Received message from server: ${data['allMessages']}`)
+                console.log(`Received message from server: ${data['allMessages']} and type: ${data['type']}`)
                 setMessage(data['allMessages']);
                 setCount(data['user_count']);
+                setType(data['type']);
             });
         });
     }
@@ -35,10 +35,6 @@ export function Content() {
                     {
                     messages.map((message, index) => 
                     <div id="messageCard" key={index}>
-                        {
-                        isLink && <a href={message} target="_blank">
-                            {message}
-                        </a>}
                         {message}
                     </div>)
                     }
@@ -47,3 +43,8 @@ export function Content() {
         </div>
     );
 }
+
+//  {
+//                         isLink && <a href={message} target="_blank">
+//                             {message}
+//                         </a>}

@@ -5,9 +5,11 @@ from enum import Enum
 
 class Chatbox(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(120))
     message = db.Column(db.String(500))
     
-    def __init__(self, msg):
+    def __init__(self, type, msg):
+        self.type = type
         self.message = msg
         
     def __repr__(self):

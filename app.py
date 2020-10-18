@@ -20,6 +20,7 @@ USER_COUNT = 0
 USER_LIST = []
 USERNAME = ""
 AVENGER = ""
+TYPE = ""
 
 app = flask.Flask(__name__)
 
@@ -41,7 +42,11 @@ db.session.commit()
 
 def emit_all_messages(channel):
     all_messages = [db_message.message for db_message in db.session.query(models.Chatbox).all()]
-    socketio.emit(channel, {'allMessages': all_messages, 'user_count': USER_COUNT })
+    all_type = [db_message.type for db_message in db.session.query(models.Chatbox).all()]
+    socketio.emit(channel, {'allMessages': all_messages, 
+                            'user_count': USER_COUNT,
+                            'type': all_type
+                            })
     
 def emit_all_oauth_users(channel):
     all_users = [user.name for user in db.session.query(models.AuthUser).all()]
@@ -111,36 +116,37 @@ def on_disconnect():
     
 @socketio.on('new message input')
 def on_new_message(data):
+    global TYPE
     print("Got an event for new message input with data:", data)
+    
     msg = data['message']
+    TYPE = "user"
     
     user_message = USERNAME + ": " + msg
-    db.session.add(models.Chatbox(user_message));
-
+    
     if msg[:2] == "!!":
+        db.session.add(models.Chatbox(TYPE, user_message));
+        TYPE = "bot"
         bot = Chatbot(msg, AVENGER)
         bot_response = bot.getResponse()
-        db.session.add(models.Chatbox(bot_response));
+        db.session.add(models.Chatbox(TYPE, bot_response));
         
-    if 'http' in msg:
-        # url = urlparse(msg)
-        # a_url = ""
-        # extractor = URLExtract()
-        # url = extractor.find_urls(msg)
-        # print(url)
-        # a_url += '<a href="{}" />'.format(url[0])
-        # print(a_url)
-        # new_msg = msg.replace(url[0], '<a href="{}">CLICK</a>'.format(url[0]))
-        # print(new_msg)
-        new_msg = 'https://www.wikipedia.org'
-        response = requests.get(new_msg) 
-        url_msg = response.url
-        type_msg = response.headers['Content-Type']
-        print(response.url)
-        print(response.headers['Content-Type'])
-        db.session.add(models.Chatbox(url_msg));
+    else:
+        if 'http' in msg:
+            response = requests.get(msg) 
+            url_msg = response.url
+            type_msg = response.headers['Content-Type']
+            
+            if type_msg == 'text/html':
+                TYPE = "html"
+                
+            if 'image' in type_msg:
+                TYPE = "jpg"
+        
+            user_message = USERNAME + ": " + url_msg
+            
+        db.session.add(models.Chatbox(TYPE, user_message));
 
-        
     db.session.commit();
 
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
