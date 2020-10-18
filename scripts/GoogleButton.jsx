@@ -4,13 +4,16 @@ import { GoogleLogin } from 'react-google-login';
 
 function handleGoogleOAuthLogin(response) {
     console.log("Google auth reached.");
+    console.log(response)
  
-    let name = response.profileObj.name;
-    let email = response.profileObj.email;
+    const name = response.profileObj.name;
+    const email = response.profileObj.email;
+    const imageUrl = response.profileObj.imageUrl;
     
     Socket.emit('new google user', {
         'name': name,
         'email': email,
+        'imageUrl': imageUrl
     });
     
     console.log(`Sent the name ${name} and email ${email} to server!`);

@@ -51,14 +51,16 @@ def emit_all_messages(channel):
 def emit_all_oauth_users(channel):
     all_users = [user.name for user in db.session.query(models.AuthUser).all()]
     all_auth = [user.auth_type for user in db.session.query(models.AuthUser).all()]
+    all_image = [user.image_url for user in db.session.query(models.AuthUser).all()]
     
     socketio.emit(channel, {
         'allUsers': all_users,
         'allAuth': all_auth,
+        'allImage': all_image,
     })
 
-def push_new_user_to_db(name, email, auth_type):
-    db.session.add(models.AuthUser(name, email, auth_type));
+def push_new_user_to_db(name, email, auth_type, image_url):
+    db.session.add(models.AuthUser(name, email, auth_type, image_url));
     db.session.commit();
         
     emit_all_oauth_users(USERS_UPDATED_CHANNEL)
@@ -158,12 +160,14 @@ def on_new_message(data):
 def on_new_google_user(data):
     print("Got an event for new google user input with data:", data)
     
-    username = data['name']
-    room = "login"
-    join_room(room)
-    print(username + ' has entered the room ' + room)
+    name = data['name']
+    email = data['email']
+    image_url = data['imageUrl']
+    # room = "login"
+    # join_room(room)
+    # print(username + ' has entered the room ' + room)
     
-    push_new_user_to_db(data['name'], data['email'], models.AuthUserType.GOOGLE)
+    push_new_user_to_db(name, email, models.AuthUserType.GOOGLE, image_url)
     
     
 @app.route('/')

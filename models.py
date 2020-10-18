@@ -18,14 +18,16 @@ class Chatbox(db.Model):
 class AuthUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     auth_type = db.Column(db.String(120))
+    image_url = db.Column(db.String(240))
     name = db.Column(db.String(120))
     email = db.Column(db.String(120))
     
-    def __init__(self, name, email, auth_type):
+    def __init__(self, name, email, auth_type, image_url):
         assert type(auth_type) is AuthUserType
         self.name = name
         self.email = email
         self.auth_type = auth_type.value
+        self.image_url = image_url
         
     def __repr__(self):
         return "<User name: {}\ntype: {}".format(self.name, self.auth_type)
