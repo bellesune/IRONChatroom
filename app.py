@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from bot import Chatbot
 from flask import request
 from flask_socketio import join_room, leave_room
+from urlextract import URLExtract
 import os
 import flask
 import flask_sqlalchemy
@@ -110,14 +111,29 @@ def on_disconnect():
 @socketio.on('new message input')
 def on_new_message(data):
     print("Got an event for new message input with data:", data)
+    msg = data['message']
     
-    user_message = USERNAME + ": " + data['message']
+    user_message = USERNAME + ": " + msg
     db.session.add(models.Chatbox(user_message));
 
-    if data['message'][:2] == "!!":
-        bot = Chatbot(data['message'], AVENGER)
+    if msg[:2] == "!!":
+        bot = Chatbot(msg, AVENGER)
         bot_response = bot.getResponse()
         db.session.add(models.Chatbox(bot_response));
+        
+    if 'http' in msg:
+        # a_url = ""
+        # extractor = URLExtract()
+        # url = extractor.find_urls(msg)
+        # print(url)
+        # a_url += '<a href="{}" />'.format(url[0])
+        # print(a_url)
+        # new_msg = msg.replace(url[0], '<a href="{}">CLICK</a>'.format(url[0]))
+        # print(new_msg)
+        new_msg = 'https://www.wikipedia.org'
+        response = requests.get(new_msg) 
+        db.session.add(models.Chatbox(response.url));
+
         
     db.session.commit();
 
