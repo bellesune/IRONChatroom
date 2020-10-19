@@ -13,8 +13,9 @@ marvel_private = os.environ['MARVEL_PRIVATE']
 class Chatbot:
     name = "IronBot"
     
-    def __init__(self, command):
+    def __init__(self, command, user_list):
         self.command = command
+        self.user_list = user_list
         
     def getAvenger(self):
         username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
@@ -63,7 +64,7 @@ class Chatbot:
         
     def getActiveUsers(self):
         active_users = ""
-        for user in USER_LIST:
+        for user in self.user_list:
             active_users += user + ", "
         
         return "Active users in the chat are " + active_users

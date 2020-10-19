@@ -102,7 +102,7 @@ def on_new_message(data):
             db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, msg));
             
             TYPE = "bot"
-            bot = Chatbot(msg)
+            bot = Chatbot(msg, USER_LIST)
             bot_response = bot.getResponse()
             db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, bot_response));
             
