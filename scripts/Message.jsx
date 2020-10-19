@@ -7,29 +7,23 @@ export function Message(props) {
   const images = props.images;
   const messages = props.messages;
   const newMessages = [];
-  
-  const botStyle = {color: 'blue'};
-  let divStyle = {color: 'black'};
-  const d = {color: 'white'};
-  const img = {width: '20px', heigh: "20px"};
-  const imgLink = {width: '120px', heigh: "110px"};
-  
+
   for (let i=0; i<type.length; i++){
     if (type[i] === 'bot'){
       newMessages.push(
         <div>
-          <span style={d}><img src="https://cdn4.iconfinder.com/data/icons/super-hero/154/super-hero-iron-man-head-skin-512.png" style={img}/>IRONBOT</span>
-          <div style={botStyle} id="messageCard">
+          <span id="ironbot"><img id="img_bot" src="./static/ironbot.jpg"/> IRONBOT</span>
+            <div id="messageCard_bot">
               {messages[i]}
-          </div>
+            </div>
         </div>
       );
     }
     else if (type[i] === 'html'){
       newMessages.push(
         <div>
-          <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
-          <div style={divStyle} id="messageCard">
+          <span><img id="img_user" src={images[i]}/> {users[i]}</span>
+          <div id="messageCard">
             <a href={messages[i]} target="_blank">
               {messages[i]}
             </a>  
@@ -40,10 +34,10 @@ export function Message(props) {
     else if (type[i] === 'jpg'){
       newMessages.push(
         <div>
-          <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
-          <div style={divStyle} id="messageCard">
+          <span><img id="img_user" src={images[i]}/> {users[i]}</span>
+          <div id="messageCard">
             <a href={messages[i]} target="_blank">
-              {messages[i]}<img src={messages[i]} style={imgLink}/>
+              {messages[i]}<img id="img_link" src={messages[i]}/>
             </a>  
           </div>
         </div>
@@ -52,8 +46,8 @@ export function Message(props) {
     else{
       newMessages.push(
         <div>
-        <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
-          <div style={divStyle} id="messageCard">
+        <span><img id="img_user" src={images[i]}/> {users[i]}</span>
+          <div id="messageCard">
               {messages[i]}
           </div>
         </div>

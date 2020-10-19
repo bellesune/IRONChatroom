@@ -33,9 +33,8 @@ export function Content() {
             <div id="title">IRON Chatroom</div>
             <div id="subtitle">Instant Real-time Online Notification</div>
             <GoogleButton />
-            
             <div id="activeUsers">Active users: {count}</div>
-                <Message type={type} auth={auth} users={users} images={images} messages={messages} />
+            <Message type={type} auth={auth} users={users} images={images} messages={messages} />
             <Input/>
         </div>
     );

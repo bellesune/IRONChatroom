@@ -6,7 +6,7 @@
     text-align: center;
     font-family: 'BenchNine';
     font-size: 18px;
-    color: black;
+    color: white;
     background-color: #000207;
 }
 
@@ -14,7 +14,7 @@
     font-family: 'Marvel';
     font-size: 85px;
     font-weight: 700;
-    color: #0E5883;
+    color: #1FB8FB;
 }
 
 #subtitle {
@@ -27,6 +27,7 @@
     color: #1A76A5;
     font-size: 18px;
     margin-bottom: 10px;
+    margin-top: 20px;
 }
 
 .messagesGrid {
@@ -37,15 +38,12 @@
     margin-left: auto;
     margin-right: auto;
     padding: 25px;
-    background-color: papayaWhip;
-    opacity: 0.83;
     background-image: url("bg.jpg");
     background-position: center;
     background-size: cover;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    
 }
 
 #messageCard {
@@ -55,8 +53,8 @@
     padding: 10px;
     color: black;
     background-color: white;
-    margin-top: 10px;
-    margin: 10px;
+    margin-top: 3px;
+    margin-bottom: 15px;
 }
 
 input {
@@ -73,4 +71,42 @@ button {
     height: 60px;
     margin-left: -70px;
     border-radius: 10px;
+}
+
+#messageCard_bot {
+    font-family: 'Roboto Mono';
+    font-size: 13px;
+    border-radius: 15px;
+    padding: 10px;
+    color: #1FB8FB; 
+    background-color: #000207;
+    margin-top: 3px;
+    margin-bottom: 15px;
+}
+
+#ironbot {
+    color: white;
+}
+
+#google_btn {
+    text-align: left;
+    width: 100px;
+    height: 75px;
+    color: green;
+}
+
+#img_bot {
+    width: 30px;
+    height: 30px;
+    float: left;
+}
+
+#img_user {
+    width: 20px;
+    height: 20px;
+}
+
+#img_link {
+    width: 120px;
+    height: 100px;
 }

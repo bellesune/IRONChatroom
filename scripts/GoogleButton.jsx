@@ -25,9 +25,13 @@ function handleOnFailure(){
 export function GoogleButton() {
     return <GoogleLogin
                 clientId={'836600659281-eeutvpmf60kb2f2jfhcju5kfnebbsuu2.apps.googleusercontent.com'}
-                buttonText="Login with Google"
+                buttonText="Login"
                 onSuccess={handleGoogleOAuthLogin}
                 onFailure={handleOnFailure}
                 cookiePolicy={'single_host_origin'}
-            />
+                // render={renderProps => (
+                // <button onClick={renderProps.onClick} disabled={renderProps.disabled}>
+                //     This is my custom Google button
+                // </button>)}
+                />
 }
