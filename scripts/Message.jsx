@@ -11,7 +11,8 @@ export function Message(props) {
   const botStyle = {color: 'blue'};
   let divStyle = {color: 'black'};
   const d = {color: 'white'};
-  const img = {width: '20px', heigh: "20px"}
+  const img = {width: '20px', heigh: "20px"};
+  const imgLink = {width: '120px', heigh: "110px"};
   
   for (let i=0; i<type.length; i++){
     if (type[i] === 'bot'){
@@ -26,21 +27,25 @@ export function Message(props) {
     }
     else if (type[i] === 'html'){
       newMessages.push(
-        <div style={divStyle} id="messageCard">
-        <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
-          <a href={messages[i]} target="_blank">
-            {messages[i]}
-          </a>  
+        <div>
+          <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
+          <div style={divStyle} id="messageCard">
+            <a href={messages[i]} target="_blank">
+              {messages[i]}
+            </a>  
+          </div>
         </div>
       );
     }
-    else if (type[i] === 'html'){
+    else if (type[i] === 'jpg'){
       newMessages.push(
-        <div style={divStyle} id="messageCard">
-        <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
-          <a href={messages[i]} target="_blank">
-            {messages[i]}
-          </a>  
+        <div>
+          <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
+          <div style={divStyle} id="messageCard">
+            <a href={messages[i]} target="_blank">
+              {messages[i]}<img src={messages[i]} style={imgLink}/>
+            </a>  
+          </div>
         </div>
       );
     }
