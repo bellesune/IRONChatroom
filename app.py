@@ -16,12 +16,12 @@ import requests
 MESSAGES_RECEIVED_CHANNEL = 'message received'
 USERS_UPDATED_CHANNEL = 'users updated'
 
-USER_COUNT = 0
-USER_LIST = []
 USERNAME = ""
 TYPE = ""
 IMAGE = ""
 AUTH = ""
+USER_COUNT = 0
+USER_LIST = []
 isLoggedIn = False
 
 app = flask.Flask(__name__)
@@ -61,12 +61,6 @@ def push_new_user_to_db(name, email, auth_type, image_url):
     db.session.add(models.AuthUser(name, email, auth_type, image_url));
     db.session.commit();
     
-# def random_name():
-#     username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
-#     avenger_name = random.choice(username_list)
-    
-#     return avenger_name
-    
 def count_user(user, connection):
     global USER_COUNT 
     global USER_LIST
@@ -81,10 +75,7 @@ def count_user(user, connection):
     
 @socketio.on('connect')
 def on_connect():
-    global USERNAME 
-
-    print(USERNAME, "connected")
-    count_user(USERNAME, "connected")
+    print("Someone is attempting to connect/login")
     
     socketio.emit('connected', {
         'test': 'Connected'
@@ -94,9 +85,6 @@ def on_connect():
 
 @socketio.on('disconnect')
 def on_disconnect():
-    print(request.sid)
-    global USERNAME
-
     print(USERNAME, "disconnected")
     count_user(USERNAME, "disconnected")
     
@@ -143,7 +131,6 @@ def on_new_google_user(data):
     print("Got an event for new google user input with data:", data)
     
     global USERNAME, IMAGE, AUTH, isLoggedIn
-    
     USERNAME = data['name']
     email = data['email']
     IMAGE = data['imageUrl']
@@ -153,6 +140,8 @@ def on_new_google_user(data):
     socketio.emit('login successful', { 
         'isLoggedIn': True
     });
+    
+    count_user(USERNAME, "connected")
     
     push_new_user_to_db(USERNAME, email, AUTH, IMAGE)
     
