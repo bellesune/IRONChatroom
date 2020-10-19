@@ -50,10 +50,14 @@ def emit_all_messages(channel):
     all_messages = [user.message for user in db.session.query(models.Chatbox).all()]
     all_type = [user.role_type for user in db.session.query(models.Chatbox).all()]
     
-    socketio.emit(channel, {'allMessages': all_messages, 
-                            'user_count': USER_COUNT,
-                            'type': all_type
-                            })
+    socketio.emit(channel, {
+        'type': all_type,
+        'allAuth': all_auth,
+        'allUsers': all_users,
+        'allImages': all_image,
+        'allMessages': all_messages,
+        'user_count': USER_COUNT,
+        })
 
 def push_new_user_to_db(name, email, auth_type, image_url):
     db.session.add(models.AuthUser(name, email, auth_type, image_url));
