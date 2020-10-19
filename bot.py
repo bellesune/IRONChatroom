@@ -2,6 +2,7 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 import os
 import requests
+import random
 
 dotenv_path = join(dirname(__file__), 'marvel.env')
 load_dotenv(dotenv_path)
@@ -12,9 +13,12 @@ marvel_private = os.environ['MARVEL_PRIVATE']
 class Chatbot:
     name = "IronBot"
     
-    def __init__(self, command, avenger):
+    def __init__(self, command):
         self.command = command
-        self.avenger = avenger
+        
+    def getAvenger(self):
+        username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
+        return random.choice(username_list)
         
     def about(self):
         return "IronBot, at your service! I'm inspired by Iron Man's butler, J.A.R.V.I.S. \
@@ -78,7 +82,7 @@ class Chatbot:
             
         #TODO pass avenger name
         elif self.command == "!! whoami":
-            command_response = self.whoami(self.avenger)
+            command_response = self.whoami(self.getAvenger())
             
         elif self.command == "!! users":
             command_response = self.getActiveUsers()
@@ -87,3 +91,5 @@ class Chatbot:
             command_response = "Can you repeat that? I can't understand your command."
             
         return command_response
+        
+    

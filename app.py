@@ -1,4 +1,3 @@
-# app.py
 from os.path import join, dirname
 from dotenv import load_dotenv
 from bot import Chatbot
@@ -16,10 +15,10 @@ import requests
 
 MESSAGES_RECEIVED_CHANNEL = 'message received'
 USERS_UPDATED_CHANNEL = 'users updated'
+
 USER_COUNT = 0
 USER_LIST = []
 USERNAME = ""
-AVENGER = ""
 TYPE = ""
 IMAGE = ""
 AUTH = ""
@@ -34,7 +33,6 @@ dotenv_path = join(dirname(__file__), 'sql.env')
 load_dotenv(dotenv_path)
 
 database_uri = os.environ['DATABASE_URL']
-
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 db = flask_sqlalchemy.SQLAlchemy(app)
@@ -63,18 +61,11 @@ def push_new_user_to_db(name, email, auth_type, image_url):
     db.session.add(models.AuthUser(name, email, auth_type, image_url));
     db.session.commit();
     
-def random_name():
-    username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
-    avenger_name = random.choice(username_list)
+# def random_name():
+#     username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
+#     avenger_name = random.choice(username_list)
     
-    return avenger_name
-    
-def create_username(name):
-    user = ""
-    random_num = random.randint(1,10000)
-    user += name + str(random_num)
-    
-    return user
+#     return avenger_name
     
 def count_user(user, connection):
     global USER_COUNT 
@@ -90,12 +81,7 @@ def count_user(user, connection):
     
 @socketio.on('connect')
 def on_connect():
-    
     global USERNAME 
-    global AVENGER
-    
-    AVENGER = random_name()
-    # USERNAME = create_username(AVENGER)
 
     print(USERNAME, "connected")
     count_user(USERNAME, "connected")
@@ -122,14 +108,13 @@ def on_new_message(data):
         
         global TYPE
         TYPE = "user"
-        
         msg = data['message']
         
         if msg[:2] == "!!":
             db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, msg));
             
             TYPE = "bot"
-            bot = Chatbot(msg, AVENGER)
+            bot = Chatbot(msg)
             bot_response = bot.getResponse()
             db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, bot_response));
             
