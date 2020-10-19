@@ -9,6 +9,10 @@ export function Content() {
     const [count, setCount] = React.useState(0);
     const [type, setType] = React.useState("");
     
+    // const [user, setUser] = React.useState([]);
+    // const [authType, setAuthType] = React.useState([]);
+    // const [image, setImage] = React.useState([]);
+    
     function getNewMessages() {
         React.useEffect(() => {
             Socket.on('message received', (data) => {
@@ -19,6 +23,17 @@ export function Content() {
             });
         });
     }
+    
+    // function getAllAccounts() {
+    //     React.useEffect(() => {
+    //         Socket.on('users updated', (data) => {
+    //             console.log(`Received accounts from server: ${data['allAuth']}: ${data['allUsers']}`)
+    //             setUser(data['allUsers']);
+    //             setAuthType(data['allAuth']);
+    //             setImage(data['allImage'])
+    //         })
+    //     });
+    // }
    
     getNewMessages();
     const x = "PRINT ME";

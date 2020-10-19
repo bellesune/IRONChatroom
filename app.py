@@ -21,6 +21,8 @@ USER_LIST = []
 USERNAME = ""
 AVENGER = ""
 TYPE = ""
+IMAGE = ""
+AUTH = ""
 
 app = flask.Flask(__name__)
 
@@ -41,13 +43,18 @@ db.create_all()
 db.session.commit()
 
 def emit_all_messages(channel):
-    all_messages = [db_message.message for db_message in db.session.query(models.Chatbox).all()]
-    all_type = [db_message.type for db_message in db.session.query(models.Chatbox).all()]
+    all_users = [user.user for user in db.session.query(models.Chatbox).all()]
+    all_auth = [user.auth_type for user in db.session.query(models.Chatbox).all()]
+    all_image = [user.image for user in db.session.query(models.Chatbox).all()]
+    all_messages = [user.message for user in db.session.query(models.Chatbox).all()]
+    all_type = [user.role_type for user in db.session.query(models.Chatbox).all()]
+    
     socketio.emit(channel, {'allMessages': all_messages, 
                             'user_count': USER_COUNT,
                             'type': all_type
                             })
-    
+
+#WONT NEED THIS 
 def emit_all_oauth_users(channel):
     all_users = [user.name for user in db.session.query(models.AuthUser).all()]
     all_auth = [user.auth_type for user in db.session.query(models.AuthUser).all()]
@@ -97,7 +104,7 @@ def on_connect():
     global AVENGER
     
     AVENGER = random_name()
-    USERNAME = create_username(AVENGER)
+    # USERNAME = create_username(AVENGER)
 
     print(USERNAME, "connected")
     count_user(USERNAME, "connected")
@@ -118,20 +125,23 @@ def on_disconnect():
     
 @socketio.on('new message input')
 def on_new_message(data):
-    global TYPE
     print("Got an event for new message input with data:", data)
     
-    msg = data['message']
+    global TYPE
     TYPE = "user"
+    
+    msg = data['message']
+    print("USERNAEM", USERNAME)
     
     user_message = USERNAME + ": " + msg
     
     if msg[:2] == "!!":
-        db.session.add(models.Chatbox(TYPE, user_message));
+        db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
+        
         TYPE = "bot"
         bot = Chatbot(msg, AVENGER)
         bot_response = bot.getResponse()
-        db.session.add(models.Chatbox(TYPE, bot_response));
+        db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, bot_response));
         
     else:
         if 'http' in msg:
@@ -150,7 +160,7 @@ def on_new_message(data):
             user_message = USERNAME + ": " + msg
             print(TYPE)
             
-        db.session.add(models.Chatbox(TYPE, user_message));
+        db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
 
     db.session.commit();
 
@@ -160,14 +170,20 @@ def on_new_message(data):
 def on_new_google_user(data):
     print("Got an event for new google user input with data:", data)
     
-    name = data['name']
+    global USERNAME, IMAGE, AUTH
+    
+    USERNAME = data['name']
     email = data['email']
-    image_url = data['imageUrl']
+    IMAGE = data['imageUrl']
+    AUTH = "Google"
+    
+    print("AUTH", AUTH)
+    
     # room = "login"
     # join_room(room)
     # print(username + ' has entered the room ' + room)
     
-    push_new_user_to_db(name, email, models.AuthUserType.GOOGLE, image_url)
+    push_new_user_to_db(USERNAME, email, AUTH, IMAGE)
     
     
 @app.route('/')
