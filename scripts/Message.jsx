@@ -13,38 +13,48 @@ export function Message(props) {
   const d = {color: 'white'};
   const img = {width: '20px', heigh: "20px"}
   
-    for (let i=0; i<type.length; i++){
-    
-      if (type[i] === 'bot'){
-        newMessages.push(
-          // insert image here <IMG[i]> then NAME <props.name[i]>
-          <div>
-            <span style={d}><img src="https://cdn4.iconfinder.com/data/icons/super-hero/154/super-hero-iron-man-head-skin-512.png" style={img}/>IRONBOT</span>
-            <div style={botStyle} id="messageCard">
-                {messages[i]}
-            </div>
-          </div>
-        );
-      }
-      else if (type[i] === 'html'){
-        newMessages.push(
-          // <span style={d}><img src={} style={img}/>{}</span>
-          <div style={divStyle} id="messageCard">
-            <a href={messages[i]} target="_blank">
-              {messages[i]}
-            </a>  
-          </div>
-        );
-      }
-      // else if img 
-      else{
-        newMessages.push(
-          <div style={divStyle} id="messageCard">
+  for (let i=0; i<type.length; i++){
+    if (type[i] === 'bot'){
+      newMessages.push(
+        <div>
+          <span style={d}><img src="https://cdn4.iconfinder.com/data/icons/super-hero/154/super-hero-iron-man-head-skin-512.png" style={img}/>IRONBOT</span>
+          <div style={botStyle} id="messageCard">
               {messages[i]}
           </div>
-        );
-      }
+        </div>
+      );
     }
+    else if (type[i] === 'html'){
+      newMessages.push(
+        <div style={divStyle} id="messageCard">
+        <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
+          <a href={messages[i]} target="_blank">
+            {messages[i]}
+          </a>  
+        </div>
+      );
+    }
+    else if (type[i] === 'html'){
+      newMessages.push(
+        <div style={divStyle} id="messageCard">
+        <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
+          <a href={messages[i]} target="_blank">
+            {messages[i]}
+          </a>  
+        </div>
+      );
+    }
+    else{
+      newMessages.push(
+        <div>
+        <span style={d}><img src={images[i]} style={img}/> {users[i]}</span>
+          <div style={divStyle} id="messageCard">
+              {messages[i]}
+          </div>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="messagesGrid">

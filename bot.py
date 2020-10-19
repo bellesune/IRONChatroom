@@ -86,4 +86,4 @@ class Chatbot:
         else:
             command_response = "Can you repeat that? I can't understand your command."
             
-        return self.name + ': ' +command_response
+        return command_response

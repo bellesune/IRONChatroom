@@ -125,10 +125,8 @@ def on_new_message(data):
         
         msg = data['message']
         
-        user_message = USERNAME + ": " + msg
-        
         if msg[:2] == "!!":
-            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
+            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, msg));
             
             TYPE = "bot"
             bot = Chatbot(msg, AVENGER)
@@ -148,10 +146,8 @@ def on_new_message(data):
                     
                 if 'image' in type_msg:
                     TYPE = "jpg"
-            
-                user_message = USERNAME + ": " + msg
                 
-            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
+            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, msg));
     
         db.session.commit();
     
