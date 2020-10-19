@@ -8,11 +8,7 @@ export function Content() {
     const [messages, setMessage] = React.useState([]);
     const [count, setCount] = React.useState(0);
     const [type, setType] = React.useState("");
-    
-    // const [user, setUser] = React.useState([]);
-    // const [authType, setAuthType] = React.useState([]);
-    // const [image, setImage] = React.useState([]);
-    
+
     function getNewMessages() {
         React.useEffect(() => {
             Socket.on('message received', (data) => {
@@ -23,27 +19,13 @@ export function Content() {
             });
         });
     }
-    
-    // function getAllAccounts() {
-    //     React.useEffect(() => {
-    //         Socket.on('users updated', (data) => {
-    //             console.log(`Received accounts from server: ${data['allAuth']}: ${data['allUsers']}`)
-    //             setUser(data['allUsers']);
-    //             setAuthType(data['allAuth']);
-    //             setImage(data['allImage'])
-    //         })
-    //     });
-    // }
-   
+
     getNewMessages();
-    const x = "PRINT ME";
 
     return (
         <div className="body">
             <div id="title">IRON Chatroom</div>
-            <a href="https://www.wikipedia.org" target="_blank">CLICK</a>
             <div id="subtitle">Instant Real-time Online Notification</div>
-            <div>{<a href="https://www.wikipedia.org" target="_blank">{x}</a>}</div>
             <GoogleButton />
             
             <div id="activeUsers">Active users: {count}</div>

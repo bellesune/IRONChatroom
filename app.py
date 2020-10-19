@@ -23,6 +23,7 @@ AVENGER = ""
 TYPE = ""
 IMAGE = ""
 AUTH = ""
+isLoggedIn = False
 
 app = flask.Flask(__name__)
 
@@ -54,23 +55,9 @@ def emit_all_messages(channel):
                             'type': all_type
                             })
 
-#WONT NEED THIS 
-def emit_all_oauth_users(channel):
-    all_users = [user.name for user in db.session.query(models.AuthUser).all()]
-    all_auth = [user.auth_type for user in db.session.query(models.AuthUser).all()]
-    all_image = [user.image_url for user in db.session.query(models.AuthUser).all()]
-    
-    socketio.emit(channel, {
-        'allUsers': all_users,
-        'allAuth': all_auth,
-        'allImage': all_image,
-    })
-
 def push_new_user_to_db(name, email, auth_type, image_url):
     db.session.add(models.AuthUser(name, email, auth_type, image_url));
     db.session.commit();
-        
-    emit_all_oauth_users(USERS_UPDATED_CHANNEL)
     
 def random_name():
     username_list = ["Captain America","Hulk", "Iron Man", "Spider-Man","Thor", "Thanos", "Falcon"]
@@ -127,64 +114,62 @@ def on_disconnect():
 def on_new_message(data):
     print("Got an event for new message input with data:", data)
     
-    global TYPE
-    TYPE = "user"
-    
-    msg = data['message']
-    print("USERNAEM", USERNAME)
-    
-    user_message = USERNAME + ": " + msg
-    
-    if msg[:2] == "!!":
-        db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
+    if isLoggedIn == True:
         
-        TYPE = "bot"
-        bot = Chatbot(msg, AVENGER)
-        bot_response = bot.getResponse()
-        db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, bot_response));
+        global TYPE
+        TYPE = "user"
         
-    else:
-        if 'http' in msg:
-            extractor = URLExtract()
-            urls = extractor.find_urls(msg)
-            response = requests.get(urls[0]) 
-            url_msg = response.url
-            type_msg = response.headers['Content-Type']
+        msg = data['message']
+        
+        user_message = USERNAME + ": " + msg
+        
+        if msg[:2] == "!!":
+            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
             
-            if 'text/html' in type_msg:
-                TYPE = "html"
+            TYPE = "bot"
+            bot = Chatbot(msg, AVENGER)
+            bot_response = bot.getResponse()
+            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, bot_response));
+            
+        else:
+            if 'http' in msg:
+                extractor = URLExtract()
+                urls = extractor.find_urls(msg)
+                response = requests.get(urls[0]) 
+                url_msg = response.url
+                type_msg = response.headers['Content-Type']
                 
-            if 'image' in type_msg:
-                TYPE = "jpg"
-        
-            user_message = USERNAME + ": " + msg
-            print(TYPE)
+                if 'text/html' in type_msg:
+                    TYPE = "html"
+                    
+                if 'image' in type_msg:
+                    TYPE = "jpg"
             
-        db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
-
-    db.session.commit();
-
-    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+                user_message = USERNAME + ": " + msg
+                
+            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, user_message));
+    
+        db.session.commit();
+    
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
 @socketio.on('new google user')
 def on_new_google_user(data):
     print("Got an event for new google user input with data:", data)
     
-    global USERNAME, IMAGE, AUTH
+    global USERNAME, IMAGE, AUTH, isLoggedIn
     
     USERNAME = data['name']
     email = data['email']
     IMAGE = data['imageUrl']
     AUTH = "Google"
+    isLoggedIn = True
     
-    print("AUTH", AUTH)
-    
-    # room = "login"
-    # join_room(room)
-    # print(username + ' has entered the room ' + room)
+    socketio.emit('login successful', { 
+        'isLoggedIn': True
+    });
     
     push_new_user_to_db(USERNAME, email, AUTH, IMAGE)
-    
     
 @app.route('/')
 def index():

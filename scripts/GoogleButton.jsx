@@ -4,8 +4,7 @@ import { GoogleLogin } from 'react-google-login';
 
 function handleGoogleOAuthLogin(response) {
     console.log("Google auth reached.");
-    console.log(response)
- 
+    
     const name = response.profileObj.name;
     const email = response.profileObj.email;
     const imageUrl = response.profileObj.imageUrl;
