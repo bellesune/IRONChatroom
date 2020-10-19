@@ -30,9 +30,11 @@ export function Content() {
 
     return (
         <div className="body">
-            <div id="title">IRON Chatroom</div>
+            <div id="title">
+                <img id="img_title" src="./static/ironbot.jpg"/> IRON Room
+            </div>
             <div id="subtitle">Instant Real-time Online Notification</div>
-            <GoogleButton />
+            <GoogleButton id="google_btn"/>
             <div id="activeUsers">Active users: {count}</div>
             <Message type={type} auth={auth} users={users} images={images} messages={messages} />
             <Input/>

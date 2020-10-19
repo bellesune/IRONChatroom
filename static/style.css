@@ -17,6 +17,12 @@
     color: #1FB8FB;
 }
 
+#img_title {
+    width: 120px;
+    height: 120px; 
+    margin-top: 20px;
+}
+
 #subtitle {
     color: #00544B;
     font-size: 22px;
