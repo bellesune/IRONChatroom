@@ -3,7 +3,7 @@ import flask_sqlalchemy
 from app import db
 from enum import Enum
 
-class Chatbox(db.Model):
+class Chatroom(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     role_type = db.Column(db.String(120))
     auth_type = db.Column(db.String(120))

@@ -42,11 +42,11 @@ db.create_all()
 db.session.commit()
 
 def emit_all_messages(channel):
-    all_users = [user.user for user in db.session.query(models.Chatbox).all()]
-    all_auth = [user.auth_type for user in db.session.query(models.Chatbox).all()]
-    all_image = [user.image for user in db.session.query(models.Chatbox).all()]
-    all_messages = [user.message for user in db.session.query(models.Chatbox).all()]
-    all_type = [user.role_type for user in db.session.query(models.Chatbox).all()]
+    all_users = [user.user for user in db.session.query(models.Chatroom).all()]
+    all_auth = [user.auth_type for user in db.session.query(models.Chatroom).all()]
+    all_image = [user.image for user in db.session.query(models.Chatroom).all()]
+    all_messages = [user.message for user in db.session.query(models.Chatroom).all()]
+    all_type = [user.role_type for user in db.session.query(models.Chatroom).all()]
     
     socketio.emit(channel, {
         'type': all_type,
@@ -99,12 +99,12 @@ def on_new_message(data):
         msg = data['message']
         
         if msg[:2] == "!!":
-            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, msg));
+            db.session.add(models.Chatroom(TYPE, AUTH, USERNAME, IMAGE, msg));
             
             TYPE = "bot"
             bot = Chatbot(msg, USER_LIST)
             bot_response = bot.getResponse()
-            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, bot_response));
+            db.session.add(models.Chatroom(TYPE, AUTH, USERNAME, IMAGE, bot_response));
             
         else:
             if 'http' in msg:
@@ -120,7 +120,7 @@ def on_new_message(data):
                 if 'image' in type_msg:
                     TYPE = "jpg"
                 
-            db.session.add(models.Chatbox(TYPE, AUTH, USERNAME, IMAGE, msg));
+            db.session.add(models.Chatroom(TYPE, AUTH, USERNAME, IMAGE, msg));
     
         db.session.commit();
     
