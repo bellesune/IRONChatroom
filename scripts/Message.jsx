@@ -2,7 +2,6 @@ import * as React from 'react';
 
 export function Message(props) {
   const type = props.type;
-  const auth = props.auth;
   const users = props.users;
   const images = props.images;
   const messages = props.messages;

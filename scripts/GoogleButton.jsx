@@ -12,7 +12,8 @@ function handleGoogleOAuthLogin(response) {
     Socket.emit('new google user', {
         'name': name,
         'email': email,
-        'imageUrl': imageUrl
+        'imageUrl': imageUrl,
+        'successLogin': true
     });
     
     console.log(`Sent the name ${name} and email ${email} to server!`);
@@ -25,13 +26,9 @@ function handleOnFailure(){
 export function GoogleButton() {
     return <GoogleLogin
                 clientId={'836600659281-eeutvpmf60kb2f2jfhcju5kfnebbsuu2.apps.googleusercontent.com'}
-                buttonText="Login"
+                buttonText="Login with Google"
                 onSuccess={handleGoogleOAuthLogin}
                 onFailure={handleOnFailure}
                 cookiePolicy={'single_host_origin'}
-                // render={renderProps => (
-                // <button onClick={renderProps.onClick} disabled={renderProps.disabled}>
-                //     This is my custom Google button
-                // </button>)}
-                />
+            />
 }

@@ -111,7 +111,6 @@ def on_new_message(data):
                 extractor = URLExtract()
                 urls = extractor.find_urls(msg)
                 response = requests.get(urls[0]) 
-                url_msg = response.url
                 type_msg = response.headers['Content-Type']
                 
                 if 'text/html' in type_msg:
@@ -134,11 +133,11 @@ def on_new_google_user(data):
     USERNAME = data['name']
     email = data['email']
     IMAGE = data['imageUrl']
+    isLoggedIn = data['successLogin']
     AUTH = "Google"
-    isLoggedIn = True
     
     socketio.emit('login successful', { 
-        'isLoggedIn': True
+        'isLoggedIn': isLoggedIn
     });
     
     count_user(USERNAME, "connected")
