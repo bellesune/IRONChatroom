@@ -16,16 +16,8 @@ export function Button(props) {
     
     login();
     
-    // Socket.on('login successful', (data) => {
-    //     console.log(`Login receive from server: ${data['isLoggedIn']}`);
-    //     setIsLoggedIn(data['isLoggedIn']);
-        
-    // });
-    
-    console.log("LOGGGG THIS", isLoggedIn)
     const handleSubmit = (event) => {
     
-        console.log("LOGGGG", isLoggedIn)
         if (isLoggedIn === false) {
             alert("Please logged with Google first!");
         }
@@ -35,11 +27,12 @@ export function Button(props) {
             Socket.emit('new message input', { 
                 'message': newText
             });
+            
             console.log(`Sent the message "${newText}" to the server`);  
         }
     };
 
     return (
-        <button id="Button_btn" Click={handleSubmit}>Send</button>
+        <button id="Button_btn" onClick={handleSubmit}>Send</button>
     );
 }
