@@ -12,6 +12,9 @@ KEY_FIRST_WORD = "first_word"
 KEY_MESSAGE = "message"
 KEY_LIST = "list"
 KEY_LIST_LENGTH = "list length"
+KEY_LIST_USER1 = "list user1"
+KEY_LIST_USER2 = "list user2"
+
 
 class BotTestCase(unittest.TestCase):
     
@@ -23,6 +26,7 @@ class BotTestCase(unittest.TestCase):
                 KEY_EXPECTED: {
                     KEY_LENGTH: 2,
                     KEY_LIST_LENGTH: 1,
+                    KEY_LIST_USER1: "Louis",
                     KEY_BANG: "!!",
                     KEY_COMMAND: "help",
                 }
@@ -33,6 +37,8 @@ class BotTestCase(unittest.TestCase):
                 KEY_EXPECTED: {
                     KEY_LENGTH: 2,
                     KEY_LIST_LENGTH: 2,
+                    KEY_LIST_USER1: "Louis",
+                    KEY_LIST_USER2: "Fendi",
                     KEY_BANG: "!!",
                     KEY_COMMAND: "about",
                 }
@@ -54,18 +60,27 @@ class BotTestCase(unittest.TestCase):
 
     def test_bot_command_success(self):
         for test in self.success_test_params:
-            self.c1 = Chatbot(test[KEY_INPUT], test[KEY_LIST])
-            response = self.c1.command.split()
+            self.bot = Chatbot(test[KEY_INPUT], test[KEY_LIST])
+            response = self.bot.command.split()
             expected = test[KEY_EXPECTED]
         
             self.assertEqual(len(response), expected[KEY_LENGTH])
             self.assertEqual(response[0], expected[KEY_BANG])
             self.assertEqual(response[1], expected[KEY_COMMAND])
             
+    def test_bot_user_list_success(self):
+        for test in self.success_test_params:
+            self.bot = Chatbot(test[KEY_INPUT], test[KEY_LIST])
+            response = self.bot.user_list
+            expected = test[KEY_EXPECTED]
+            
+            self.assertEqual(len(response), expected[KEY_LIST_LENGTH])
+            self.assertIs(response[0], expected[KEY_LIST_USER1])
+            
     def test_bot_command_failure(self):
         for test in self.failure_test_params:
-            self.c2 = Chatbot(test[KEY_INPUT], test[KEY_LIST])
-            response = self.c2.command.split()
+            self.bot = Chatbot(test[KEY_INPUT], test[KEY_LIST])
+            response = self.bot.command.split()
             expected = test[KEY_EXPECTED]
         
             self.assertNotEqual(len(response), expected[KEY_LENGTH])
