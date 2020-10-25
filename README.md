@@ -1,5 +1,3 @@
-# Project 2 - Module 3
-
 ## A chatroom that assissted by a chatbot that is accessible by anyone
 
 1. Create a developer account on Marvel to get the access keys. [Sign-up here!](https://www.marvel.com/signin?referer=https%3A%2F%2Fdeveloper.marvel.com%2Faccount)
