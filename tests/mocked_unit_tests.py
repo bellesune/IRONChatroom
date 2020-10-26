@@ -27,13 +27,20 @@ KEY_LIST_USER2 = "list user2"
 KEY_TRANSLATE = "translate"
 KEY_AVENGER = "avenger"
 KEY_DESC = "description"
-
+KEY_DATA = "data sent"
 class MockedJson:
     def __init__(self, json_text):
         self.json_text = json_text
             
     def json(self):
         return self.json_text
+        
+class MockedData:
+    def __init__(self, data):
+        self.data = data
+        
+    def getData(self):
+        return self.data
         
 class SocketTestCase(unittest.TestCase):
     
@@ -63,7 +70,7 @@ class SocketTestCase(unittest.TestCase):
         
         self.success_test_socket_new_messages = [
             {
-                KEY_INPUT: "Hi! How are you?",
+                KEY_DATA: { 'message': "Hi! How are you?" },
                 KEY_EXPECTED: {
                     KEY_MESSAGE: "Hi! How are you?",
                 }
@@ -85,7 +92,9 @@ class SocketTestCase(unittest.TestCase):
             })
             
     def mocked_socket_new_messages(self, data):
-        pass
+        return MockedData({
+            'message': "Hello everyone"
+        })
     
     def test_bot_command_funtranslate(self):
         for test in self.success_test_translation:
@@ -107,13 +116,15 @@ class SocketTestCase(unittest.TestCase):
         
             self.assertEqual(response, expected[KEY_DESC])
         
-    # def test_socket_new_message(self):
-    #     for test in self.success_test_socket_new_messages:
-    #         with mock.patch('app.socketio', self.mocked_socket_new_messages):
-    #             response = self.bot.whoami(test[KEY_INPUT])
-    #             expected = test[KEY_MESSAGE]
+    def test_socket_new_message(self):
+        for test in self.success_test_socket_new_messages:
+            with mock.patch('app.socketio', self.mocked_socket_new_messages):
+                response = app.on_new_message(test[KEY_DATA])
+                expected = test[KEY_EXPECTED]
         
-    #         self.assertEqual(response, expected)
+            self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
+            
+    
         
 if __name__ == '__main__':
     unittest.main()
