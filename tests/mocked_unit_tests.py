@@ -23,14 +23,11 @@ KEY_LIST_USER2 = "list user2"
 KEY_TRANSLATE = "translate"
 
 class MockedTranslation:
-    def __init__(self, status_code, json_text):
-        self.status_code = status_code
+    def __init__(self, json_text):
         self.json_text = json_text
             
-    
     def json(self):
         return self.json_text
-           
         
 class SocketTestCase(unittest.TestCase):
     
@@ -66,7 +63,6 @@ class SocketTestCase(unittest.TestCase):
         
     def mocked_api_funtranslate(self, url):
         return MockedTranslation(
-            200,
             {
                 "success": {
                     "total": 1
@@ -78,12 +74,6 @@ class SocketTestCase(unittest.TestCase):
                 }
             }
         )
-    # works
-    # def test_bot_command_funtranslate(self):
-    #         self.bot = Chatbot("!! funtranslate Hello", [])
-    #         response = self.bot.translate("Hello")
-        
-    #        self.assertEqual(response, "Valorous morrow to thee,  sir")
             
     def test_bot_command_funtranslate(self):
         for test in self.success_test_params:
@@ -94,11 +84,6 @@ class SocketTestCase(unittest.TestCase):
                 expected = test[KEY_EXPECTED]
         
             self.assertEqual(response, expected[KEY_TRANSLATE])
- 
-  
-                
-                
-
         
         
 if __name__ == '__main__':
