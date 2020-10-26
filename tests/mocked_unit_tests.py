@@ -1,8 +1,9 @@
+from os.path import dirname, join
+import sys
+sys.path.append(join(dirname(__file__), "../"))
+
 import unittest
 import unittest.mock as mock
-
-import sys
-sys.path.append('../')
 import bot
 from bot import Chatbot
 
