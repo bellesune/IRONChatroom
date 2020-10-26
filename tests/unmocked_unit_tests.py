@@ -22,11 +22,11 @@ class BotTestCase(unittest.TestCase):
         self.success_test_params = [
             {
                 KEY_INPUT: "!! help",
-                KEY_LIST: ['Louis'],
+                KEY_LIST: [''],
                 KEY_EXPECTED: {
                     KEY_LENGTH: 2,
                     KEY_LIST_LENGTH: 1,
-                    KEY_LIST_USER1: "Louis",
+                    KEY_LIST_USER1: "",
                     KEY_BANG: "!!",
                     KEY_COMMAND: "help",
                 }
@@ -48,12 +48,23 @@ class BotTestCase(unittest.TestCase):
         self.failure_test_params = [
             {
                 KEY_INPUT: "!!help",
-                KEY_LIST: ['Louis', 'Fendi'],
+                KEY_LIST: [],
                 KEY_EXPECTED: {
                     KEY_LENGTH: 2,
                     KEY_LIST_LENGTH: 1,
                     KEY_BANG: "!!",
                     KEY_COMMAND: "help",
+                }
+            },
+            {
+                KEY_INPUT: "! ! about",
+                KEY_LIST: [''],
+                KEY_EXPECTED: {
+                    KEY_LENGTH: 2,
+                    KEY_LIST_LENGTH: 0,
+                    KEY_LIST_USER1: "louis",
+                    KEY_BANG: "!!",
+                    KEY_COMMAND: "about",
                 }
             },
         ]
@@ -86,6 +97,16 @@ class BotTestCase(unittest.TestCase):
             self.assertNotEqual(len(response), expected[KEY_LENGTH])
             self.assertNotEqual(response[0], expected[KEY_BANG])
             
+    def test_bot_user_list_failure(self):
+        for test in self.failure_test_params:
+            self.bot = Chatbot(test[KEY_INPUT], test[KEY_LIST])
+            response = self.bot.user_list
+            expected = test[KEY_EXPECTED]
+            
+            self.assertNotEqual(len(response), expected[KEY_LIST_LENGTH])
+            self.assertIsNotNone(response)
+            
+    
 
 if __name__ == '__main__':
     unittest.main()
