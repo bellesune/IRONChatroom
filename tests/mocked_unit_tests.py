@@ -23,12 +23,13 @@ KEY_LIST_USER2 = "list user2"
 KEY_TRANSLATE = "translate"
 
 class MockedTranslation:
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, status_code, json_text):
+        self.status_code = status_code
+        self.json_text = json_text
             
-        # "translated": "Valorous morrow to thee,  sir",
-        # "text": "Hello",
-        # "translation": "shakespeare"
+    
+    def json(self):
+        return self.json_text
            
         
 class SocketTestCase(unittest.TestCase):
@@ -65,7 +66,17 @@ class SocketTestCase(unittest.TestCase):
         
     def mocked_api_funtranslate(self, url):
         return MockedTranslation(
-            {"contents":"Valorous"}
+            200,
+            {
+                "success": {
+                    "total": 1
+                },
+                "contents": {
+                    "translated": "Valorous morrow to thee,  sir",
+                    "text": "Hello",
+                    "translation": "shakespeare"
+                }
+            }
         )
     # works
     # def test_bot_command_funtranslate(self):
@@ -77,14 +88,12 @@ class SocketTestCase(unittest.TestCase):
     def test_bot_command_funtranslate(self):
         for test in self.success_test_params:
             self.bot = Chatbot(test[KEY_INPUT], test[KEY_LIST])
-            response = self.bot.translate(test[KEY_MESSAGE])
             
-            with mock.patch('requests.get.json', self.mocked_api_funtranslate):
-                translated_text = self.bot.translate(
-                    "Hello"
-                    )
+            with mock.patch('requests.get', self.mocked_api_funtranslate):
+                response = self.bot.translate(test[KEY_MESSAGE])
+                expected = test[KEY_EXPECTED]
         
-            self.assertEqual(translated_text, "Valorous morrow to thee,  sir")
+            self.assertEqual(response, expected[KEY_TRANSLATE])
  
   
                 
