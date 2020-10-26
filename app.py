@@ -9,9 +9,19 @@ import os
 import flask
 import flask_sqlalchemy
 import flask_socketio
-import models 
 import random
 import requests
+
+app = flask.Flask(__name__)
+
+db = flask_sqlalchemy.SQLAlchemy(app)
+def init_db(app):
+    db.init_app(app)
+    db.app = app
+    db.create_all() 
+    db.session.commit() 
+
+import models 
 
 MESSAGES_RECEIVED_CHANNEL = 'message received'
 USERS_UPDATED_CHANNEL = 'users updated'
@@ -24,8 +34,6 @@ USER_COUNT = 0
 USER_LIST = []
 isLoggedIn = False
 
-app = flask.Flask(__name__)
-
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
 
@@ -35,11 +43,8 @@ load_dotenv(dotenv_path)
 database_uri = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
-db = flask_sqlalchemy.SQLAlchemy(app)
-db.init_app(app)
-db.app = app
-db.create_all()
-db.session.commit()
+
+#db = flask_sqlalchemy.SQLAlchemy(app)
 
 def emit_all_messages(channel):
     all_users = [user.user for user in db.session.query(models.Chatroom).all()]
@@ -151,6 +156,7 @@ def index():
     return flask.render_template("index.html")
 
 if __name__ == '__main__': 
+    init_db(app)
     socketio.run(
         app,
         host=os.getenv('IP', '0.0.0.0'),

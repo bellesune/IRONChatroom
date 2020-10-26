@@ -5,7 +5,10 @@ sys.path.append(join(dirname(__file__), "../"))
 import unittest
 import unittest.mock as mock
 import bot
+import app
+import models
 from bot import Chatbot
+
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
@@ -58,6 +61,15 @@ class SocketTestCase(unittest.TestCase):
             },
         ]
         
+        self.success_test_socket_new_messages = [
+            {
+                KEY_INPUT: "Hi! How are you?",
+                KEY_EXPECTED: {
+                    KEY_MESSAGE: "Hi! How are you?",
+                }
+            },
+            ]
+        
     def mocked_api_funtranslate(self, url):
         return MockedJson({
                 "contents": { "translated": "Valorous morrow to thee,  sir" }
@@ -72,6 +84,9 @@ class SocketTestCase(unittest.TestCase):
                 }
             })
             
+    def mocked_socket_new_messages(self, data):
+        pass
+    
     def test_bot_command_funtranslate(self):
         for test in self.success_test_translation:
             self.bot = Chatbot(test[KEY_INPUT], test[KEY_LIST])
@@ -81,7 +96,6 @@ class SocketTestCase(unittest.TestCase):
                 expected = test[KEY_EXPECTED]
         
             self.assertEqual(response, expected[KEY_TRANSLATE])
-    
     
     def test_bot_command_whoami(self):
         for test in self.success_test_marvel:
@@ -93,6 +107,13 @@ class SocketTestCase(unittest.TestCase):
         
             self.assertEqual(response, expected[KEY_DESC])
         
+    # def test_socket_new_message(self):
+    #     for test in self.success_test_socket_new_messages:
+    #         with mock.patch('app.socketio', self.mocked_socket_new_messages):
+    #             response = self.bot.whoami(test[KEY_INPUT])
+    #             expected = test[KEY_MESSAGE]
+        
+    #         self.assertEqual(response, expected)
         
 if __name__ == '__main__':
     unittest.main()
