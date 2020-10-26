@@ -19,6 +19,9 @@ KEY_LIST_USER2 = "list user2"
 class BotTestCase(unittest.TestCase):
     
     def setUp(self):
+        
+        self.error = "Can you repeat that? I can't understand your command."
+        
         self.success_test_params = [
             {
                 KEY_INPUT: "!! help",
@@ -68,6 +71,7 @@ class BotTestCase(unittest.TestCase):
                 }
             },
         ]
+        
 
     def test_bot_command_success(self):
         for test in self.success_test_params:
@@ -106,7 +110,26 @@ class BotTestCase(unittest.TestCase):
             self.assertNotEqual(len(response), expected[KEY_LIST_LENGTH])
             self.assertIsNotNone(response)
             
+    # TODO use random on unmock
+    # def test_getAvenger(self):
+    #     response = Chatbot.getAvenger(self)
+    #     expected = "Captain America"
+        
+    #     self.assertEqual(response, expected)
     
+    def test_about(self):
+        self.bot = Chatbot("!! about", [])
+        response = self.bot.getResponse()
+        
+        self.assertNotEqual(response, self.error)
+            
+    def test_getAvenger(self):
+        self.bot = Chatbot("!! users", ['Amy','Becky','Cath'])
+        response = self.bot.getActiveUsers()
+        
+        self.assertIsNotNone(response)
+        self.assertNotIn('Louis', self.bot.user_list)
+        
 
 if __name__ == '__main__':
     unittest.main()
