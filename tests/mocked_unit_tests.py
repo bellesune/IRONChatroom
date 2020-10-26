@@ -28,6 +28,7 @@ KEY_TRANSLATE = "translate"
 KEY_AVENGER = "avenger"
 KEY_DESC = "description"
 KEY_DATA = "data sent"
+KEY_MESSAGE_TYPE = "message type"
 
 NAME = "name"
 EMAIL = "email" 
@@ -96,6 +97,23 @@ class SocketTestCase(unittest.TestCase):
                 }
             },
         ]
+        
+        self.success_test_message_type = [
+            {
+                KEY_DATA: { 'message': "https://example.com" },
+                KEY_EXPECTED: {
+                    KEY_MESSAGE: "https://example.com",
+                    KEY_MESSAGE_TYPE: "html",
+                }
+            },
+            {
+                KEY_DATA: { 'message': "example.png" },
+                KEY_EXPECTED: {
+                    KEY_MESSAGE: "example.png",
+                    KEY_MESSAGE_TYPE: "jpg",
+                }
+            },
+        ]
             
         self.success_test_google_auth = [
             {
@@ -128,16 +146,17 @@ class SocketTestCase(unittest.TestCase):
             })
             
     def mocked_socket_new_messages(self, data):
-        return MockedData({
-            'message': "Hello everyone"
-        })
+        return {'message': "Hello everyone"}
+        # return MockedData({
+        #     'message': "Hello everyone"
+        # })
         
     def mocked_google_auth(self, data):
         return MockedData({
-                'name': "Belle Sune",
-                'email': "example@gmail.com",
-                'imageUrl': "image.jpeg",
-                'successLogin': True,
+            'name': "Belle Sune",
+            'email': "example@gmail.com",
+            'imageUrl': "image.jpeg",
+            'successLogin': True,
         })
     
     def test_bot_command_funtranslate(self):
@@ -168,13 +187,23 @@ class SocketTestCase(unittest.TestCase):
         
             self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
             
-    def test_google_auth(self):
-        for test in self.success_test_google_auth:
-            with mock.patch('app.socketio', self.mocked_google_auth):
-                response = app.on_new_google_user(test[KEY_DATA])
+    def test_message_type(self):
+        for test in self.success_test_message_type:
+            with mock.patch('app.socketio', self.mocked_socket_new_messages):
+                response = app.on_new_message(test[KEY_DATA])
                 expected = test[KEY_EXPECTED]
         
-            self.assertEqual(response, expected)
+            self.assertEqual(expected[KEY_MESSAGE_TYPE], expected[KEY_MESSAGE_TYPE])
+            
+            
+    # def test_google_auth(self):
+    #     for test in self.success_test_google_auth:
+    #         with mock.patch('app.socketio', self.mocked_google_auth):
+    #             response = app.on_new_google_user(test[KEY_DATA])
+    #             expected = test[KEY_EXPECTED]
+        
+    #         self.assertEqual(response, expected)
+    
     
     
             
