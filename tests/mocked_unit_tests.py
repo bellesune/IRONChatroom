@@ -28,6 +28,12 @@ KEY_TRANSLATE = "translate"
 KEY_AVENGER = "avenger"
 KEY_DESC = "description"
 KEY_DATA = "data sent"
+
+NAME = "name"
+EMAIL = "email" 
+IMAGE = "imageUrl"
+LOGIN = "successLogin"
+
 class MockedJson:
     def __init__(self, json_text):
         self.json_text = json_text
@@ -36,6 +42,20 @@ class MockedJson:
         return self.json_text
         
 class MockedData:
+    def __init__(self, data):
+        self.data = data
+        
+    def getData(self):
+        return self.data
+        
+class MockedDB:
+    def __init__(self, data):
+        self.data = data
+        
+    def getData(self):
+        return self.data
+        
+class MockedSocket:
     def __init__(self, data):
         self.data = data
         
@@ -75,7 +95,23 @@ class SocketTestCase(unittest.TestCase):
                     KEY_MESSAGE: "Hi! How are you?",
                 }
             },
-            ]
+        ]
+            
+        self.success_test_google_auth = [
+            {
+                KEY_DATA: {
+                    NAME: "Belle Sune",
+                    EMAIL: "example@gmail.com",
+                    IMAGE: "image.jpeg",
+                    LOGIN: True, },
+                KEY_EXPECTED: {
+                    NAME: "Belle Sune",
+                    EMAIL: "example@gmail.com",
+                    IMAGE: "image.jpeg",
+                    LOGIN: True, },
+            },
+        ]
+            
         
     def mocked_api_funtranslate(self, url):
         return MockedJson({
@@ -94,6 +130,14 @@ class SocketTestCase(unittest.TestCase):
     def mocked_socket_new_messages(self, data):
         return MockedData({
             'message': "Hello everyone"
+        })
+        
+    def mocked_google_auth(self, data):
+        return MockedData({
+                'name': "Belle Sune",
+                'email': "example@gmail.com",
+                'imageUrl': "image.jpeg",
+                'successLogin': True,
         })
     
     def test_bot_command_funtranslate(self):
@@ -123,6 +167,16 @@ class SocketTestCase(unittest.TestCase):
                 expected = test[KEY_EXPECTED]
         
             self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
+            
+    def test_google_auth(self):
+        for test in self.success_test_google_auth:
+            with mock.patch('app.socketio', self.mocked_google_auth):
+                response = app.on_new_google_user(test[KEY_DATA])
+                expected = test[KEY_EXPECTED]
+        
+            self.assertEqual(response, expected)
+    
+    
             
     
         
