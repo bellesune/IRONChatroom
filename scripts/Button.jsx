@@ -8,7 +8,6 @@ export default function Button({ text }) {
   function login() {
     React.useEffect(() => {
       Socket.on('login successful', (data) => {
-        console.log(`Login receive from server: ${data.isLoggedIn}`);
         setIsLoggedIn(data.isLoggedIn);
       });
     });
@@ -17,16 +16,10 @@ export default function Button({ text }) {
   login();
 
   const handleSubmit = () => {
-    if (isLoggedIn === false) {
-      alert('Please logged with Google first!');
-    } else {
-      console.log(`User added a message "${newText}"`);
-
+    if (isLoggedIn === true) {
       Socket.emit('new message input', {
         message: newText,
       });
-
-      console.log(`Sent the message "${newText}" to the server`);
     }
   };
 

@@ -1,8 +1,5 @@
-import * as React from 'react';
-import { Input } from './Input';
-import { Message } from './Message';
+import React, { Message, Input, GoogleButton } from 'react';
 import { Socket } from './Socket';
-import { GoogleButton } from './GoogleButton';
 
 export default function Content() {
   const [type, setType] = React.useState([]);

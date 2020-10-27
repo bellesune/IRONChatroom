@@ -1,34 +1,30 @@
 import * as React from 'react';
-import { Socket } from './Socket';
 import { GoogleLogin } from 'react-google-login';
+import { Socket } from './Socket';
 
 function handleGoogleOAuthLogin(response) {
-    console.log("Google auth reached.");
-    
-    const name = response.profileObj.name;
-    const email = response.profileObj.email;
-    const imageUrl = response.profileObj.imageUrl;
-    
-    Socket.emit('new google user', {
-        'name': name,
-        'email': email,
-        'imageUrl': imageUrl,
-        'successLogin': true
-    });
-    
-    console.log(`Sent the name ${name} and email ${email} to server!`);
+  const { name } = response.profileObj;
+  const { email } = response.profileObj;
+  const { imageUrl } = response.profileObj;
+
+  Socket.emit('new google user', {
+    name,
+    email,
+    imageUrl,
+    successLogin: true,
+  });
 }
 
-function handleOnFailure(){
-    console.log("Login not successful");
-}
+function handleOnFailure() {}
 
-export function GoogleButton() {
-    return <GoogleLogin
-                clientId={'836600659281-eeutvpmf60kb2f2jfhcju5kfnebbsuu2.apps.googleusercontent.com'}
-                buttonText="Login with Google"
-                onSuccess={handleGoogleOAuthLogin}
-                onFailure={handleOnFailure}
-                cookiePolicy={'single_host_origin'}
-            />
+export default function GoogleButton() {
+  return (
+    <GoogleLogin
+      clientId="836600659281-eeutvpmf60kb2f2jfhcju5kfnebbsuu2.apps.googleusercontent.com"
+      buttonText="Login with Google"
+      onSuccess={handleGoogleOAuthLogin}
+      onFailure={handleOnFailure}
+      cookiePolicy="single_host_origin"
+    />
+  );
 }
