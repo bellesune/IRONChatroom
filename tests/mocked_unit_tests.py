@@ -196,26 +196,20 @@ class SocketTestCase(unittest.TestCase):
             with mock.patch('app.socketio', self.mocked_socket_new_messages):
                 response = app.on_new_message(test[KEY_DATA])
                 expected = test[KEY_EXPECTED]
-                
-                # x = self.mocked_socket_new_messages.assert_called_with(
-                #     test[KEY_EXPECTED]
-                # )
-                print(response)
-        
+   
             self.assertEqual(expected[KEY_MESSAGE_TYPE], expected[KEY_MESSAGE_TYPE])
      
+    
     # @mock.patch('app.on_new_message')       
     # def test_socket_new_message(self, mocked_on_new_message):
     #     mocked_on_new_message.emit = mocked_TODO
     #     response = app.call_emit()
-        
-        
-        
-            #     response = app.on_new_message(test[KEY_DATA])
-            #     expected = test[KEY_EXPECTED]
-        
-            # self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
-            
+
+    #     response = app.on_new_message(test[KEY_DATA])
+    #     expected = test[KEY_EXPECTED]
+
+    # self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
+    
             
     # def test_google_auth(self):
     #     for test in self.success_test_google_auth:
@@ -225,10 +219,7 @@ class SocketTestCase(unittest.TestCase):
         
     #         self.assertEqual(response, expected)
     
-    
-    
-            
-    
+
         
 if __name__ == '__main__':
     unittest.main()

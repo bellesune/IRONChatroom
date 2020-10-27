@@ -75,6 +75,37 @@ class BotTestCase(unittest.TestCase):
             },
         ]
         
+        self.commands = [
+            {
+                KEY_INPUT: "!! help",
+                KEY_EXPECTED: {
+                    KEY_BANG: "!!",
+                    KEY_COMMAND: "help"
+                }    
+            },
+            {
+                KEY_INPUT: "!! funtranslate",
+                KEY_EXPECTED: {
+                    KEY_BANG: "!!",
+                    KEY_COMMAND: "funtranslate"
+                }    
+            },
+            {
+                KEY_INPUT: "!! whoami",
+                KEY_EXPECTED: {
+                    KEY_BANG: "!!",
+                    KEY_COMMAND: "whoami"
+                }    
+            },
+            {
+                KEY_INPUT: "!! users",
+                KEY_EXPECTED: {
+                    KEY_BANG: "!!",
+                    KEY_COMMAND: "users"
+                }    
+            },
+        ]
+        
 
     def test_bot_command_success(self):
         for test in self.success_test_params:
@@ -113,25 +144,46 @@ class BotTestCase(unittest.TestCase):
             self.assertNotEqual(len(response), expected[KEY_LIST_LENGTH])
             self.assertIsNotNone(response)
             
-    # TODO use random on unmock
-    # def test_getAvenger(self):
-    #     response = Chatbot.getAvenger(self)
-    #     expected = "Captain America"
+    def test_getAvenger(self):
+        response = Chatbot.getAvenger(self)
+        expected = "Black Widow"
         
-    #     self.assertEqual(response, expected)
+        self.assertNotIn(response, expected)
     
     def test_about(self):
         self.bot = Chatbot("!! about", [])
         response = self.bot.getResponse()
         
         self.assertNotEqual(response, self.error)
+        
+    def test_error(self):
+        self.bot = Chatbot("!!", [])
+        response = self.bot.getResponse()
+        
+        self.assertEqual(response, self.error)
             
-    def test_getAvenger(self):
+    def test_getActiveUsers(self):
         self.bot = Chatbot("!! users", ['Amy','Becky','Cath'])
         response = self.bot.getActiveUsers()
         
         self.assertIsNotNone(response)
         self.assertNotIn('Louis', self.bot.user_list)
+        
+    def test_help(self):
+        self.bot = Chatbot("!! help", [])
+        response = self.bot.getHelp()
+        
+        self.assertIsNotNone(response)
+        self.assertTrue(response.startswith("!!"))
+        self.assertEqual(len(response), 184)
+        
+    def test_getResponse(self):
+        for test in self.commands:
+            self.bot = Chatbot(test[KEY_INPUT], [])
+            response = self.bot.getResponse()
+            
+            self.assertNotEqual(response, "")
+            self.assertNotEqual(response, self.error)
         
 
 if __name__ == '__main__':
