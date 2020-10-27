@@ -185,7 +185,7 @@ class SocketTestCase(unittest.TestCase):
         
     def test_socket_new_message(self):
         for test in self.success_test_socket_new_messages:
-            with mock.patch('app.socketio', self.mocked_socket_new_messages):
+            with mock.patch('app.SOCKETIO', self.mocked_socket_new_messages):
                 response = app.on_new_message(test[KEY_DATA])
                 expected = test[KEY_EXPECTED]
         
@@ -193,7 +193,7 @@ class SocketTestCase(unittest.TestCase):
             
     def test_message_type(self):
         for test in self.success_test_message_type:
-            with mock.patch('app.socketio', self.mocked_socket_new_messages):
+            with mock.patch('app.SOCKETIO', self.mocked_socket_new_messages):
                 response = app.on_new_message(test[KEY_DATA])
                 expected = test[KEY_EXPECTED]
    
@@ -213,7 +213,7 @@ class SocketTestCase(unittest.TestCase):
             
     # def test_google_auth(self):
     #     for test in self.success_test_google_auth:
-    #         with mock.patch('app.socketio', self.mocked_google_auth):
+    #         with mock.patch('app.SOCKETIO', self.mocked_google_auth):
     #             response = app.on_new_google_user(test[KEY_DATA])
     #             expected = test[KEY_EXPECTED]
         

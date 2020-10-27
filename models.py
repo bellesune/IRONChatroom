@@ -1,17 +1,17 @@
 """ import sqlalchemy and app """
 import flask_sqlalchemy
 from enum import Enum
-from app import db
+from app import DB
 
 
-class Chatroom(db.Model):
+class Chatroom(DB.Model):
     """ Create columns for chatroom and messages received """
-    id = db.Column(db.Integer, primary_key=True)
-    role_type = db.Column(db.String(120))
-    auth_type = db.Column(db.String(120))
-    user = db.Column(db.String(120))
-    image = db.Column(db.String(240))
-    message = db.Column(db.String(500))
+    id = DB.Column(DB.Integer, primary_key=True)
+    role_type = DB.Column(DB.String(120))
+    auth_type = DB.Column(DB.String(120))
+    user = DB.Column(DB.String(120))
+    image = DB.Column(DB.String(240))
+    message = DB.Column(DB.String(500))
 
     def __init__(self, role_type, auth_type, user, image, msg):
         self.role_type = role_type
@@ -24,13 +24,13 @@ class Chatroom(db.Model):
         return "<Chatbox message: %s>" % self.message
 
 
-class AuthUser(db.Model):
+class AuthUser(DB.Model):
     """ Create columns for Google Auth """
-    id = db.Column(db.Integer, primary_key=True)
-    auth_type = db.Column(db.String(120))
-    image_url = db.Column(db.String(240))
-    name = db.Column(db.String(120))
-    email = db.Column(db.String(120))
+    id = DB.Column(DB.Integer, primary_key=True)
+    auth_type = DB.Column(DB.String(120))
+    image_url = DB.Column(DB.String(240))
+    name = DB.Column(DB.String(120))
+    email = DB.Column(DB.String(120))
 
     def __init__(self, name, email, auth_type, image_url):
         # assert type(auth_type) is AuthUserType

@@ -144,34 +144,34 @@ class BotTestCase(unittest.TestCase):
             self.assertNotEqual(len(response), expected[KEY_LIST_LENGTH])
             self.assertIsNotNone(response)
             
-    def test_getAvenger(self):
-        response = Chatbot.getAvenger(self)
+    def test_get_avenger(self):
+        response = Chatbot.get_avenger(self)
         expected = "Black Widow"
         
         self.assertNotIn(response, expected)
     
     def test_about(self):
         self.bot = Chatbot("!! about", [])
-        response = self.bot.getResponse()
+        response = self.bot.get_response()
         
         self.assertNotEqual(response, self.error)
         
     def test_error(self):
         self.bot = Chatbot("!!", [])
-        response = self.bot.getResponse()
+        response = self.bot.get_response()
         
         self.assertEqual(response, self.error)
             
-    def test_getActiveUsers(self):
+    def test_get_active_users(self):
         self.bot = Chatbot("!! users", ['Amy','Becky','Cath'])
-        response = self.bot.getActiveUsers()
+        response = self.bot.get_active_users()
         
         self.assertIsNotNone(response)
         self.assertNotIn('Louis', self.bot.user_list)
         
     def test_help(self):
         self.bot = Chatbot("!! help", [])
-        response = self.bot.getHelp()
+        response = self.bot.get_help()
         
         self.assertIsNotNone(response)
         self.assertTrue(response.startswith("!!"))
@@ -180,9 +180,8 @@ class BotTestCase(unittest.TestCase):
     def test_getResponse(self):
         for test in self.commands:
             self.bot = Chatbot(test[KEY_INPUT], [])
-            response = self.bot.getResponse()
-            
-            self.assertNotEqual(response, "")
+            response = self.bot.get_response()
+           
             self.assertNotEqual(response, self.error)
         
 

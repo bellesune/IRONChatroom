@@ -84,8 +84,7 @@ class Chatbot:
 
     def whoami(self, query):
         """ Tells a brief story of the avenger """
-        url = "http://gateway.marvel.com/v1/public/characters?\
-                name={}&ts=1&apikey={}&hash={}".format(
+        url = "http://gateway.marvel.com/v1/public/characters?name={}&ts=1&apikey={}&hash={}".format(
                     query, MARVEL_PUBLIC, MARVEL_PRIVATE)
 
         response = requests.get(url)

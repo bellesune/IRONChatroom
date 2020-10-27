@@ -7,7 +7,6 @@ import flask
 import flask_sqlalchemy
 import flask_socketio
 import requests
-import models
 from bot import Chatbot
 
 APP = flask.Flask(__name__)
@@ -22,6 +21,7 @@ def init_db(app):
     DB.create_all()
     DB.session.commit()
 
+import models
 
 MESSAGES_RECEIVED_CHANNEL = "message received"
 USERS_UPDATED_CHANNEL = "users updated"
