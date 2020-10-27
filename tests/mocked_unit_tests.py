@@ -57,10 +57,14 @@ class MockedDB:
         return self.data
         
 class MockedSocket:
-    def __init__(self, data):
+    def __init__(self, channel, data):
+        self.channel = channel
         self.data = data
         
-    def getData(self):
+    def on(self):
+        return self.channel
+        
+    def emit(self):
         return self.data
         
 class SocketTestCase(unittest.TestCase):
@@ -146,10 +150,10 @@ class SocketTestCase(unittest.TestCase):
             })
             
     def mocked_socket_new_messages(self, data):
-        return {'message': "Hello everyone"}
-        # return MockedData({
-        #     'message': "Hello everyone"
-        # })
+        return MockedSocket(
+            'new message input',
+            { 'message': "Hello everyone"
+        })
         
     def mocked_google_auth(self, data):
         return MockedData({
@@ -192,6 +196,11 @@ class SocketTestCase(unittest.TestCase):
             with mock.patch('app.socketio', self.mocked_socket_new_messages):
                 response = app.on_new_message(test[KEY_DATA])
                 expected = test[KEY_EXPECTED]
+                
+                # x = self.mocked_socket_new_messages.assert_called_with(
+                #     test[KEY_EXPECTED]
+                # )
+                print(response)
         
             self.assertEqual(expected[KEY_MESSAGE_TYPE], expected[KEY_MESSAGE_TYPE])
             
