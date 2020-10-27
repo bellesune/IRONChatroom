@@ -13,11 +13,7 @@ jobs:
       - python/save-cache
       - run:
           command: python ./tests/unmocked_unit_tests.py
-          name: Unmocked Test Case
-          
-      - run:
-          command: python ./tests/mocked_unit_tests.py
-          name: HW13 test
+          name: UnmockedTestCase
 
 workflows:
   main:
