@@ -4,15 +4,10 @@ sys.path.append(join(dirname(__file__), "../"))
 
 import unittest
 import unittest.mock as mock
-import bot
 import app
 import models
 from bot import Chatbot
-from models import Chatroom
 
-
-KEY_INPUT = "input"
-KEY_EXPECTED = "expected"
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
@@ -30,6 +25,8 @@ KEY_AVENGER = "avenger"
 KEY_DESC = "description"
 KEY_DATA = "data sent"
 KEY_MESSAGE_TYPE = "message type"
+KEY_COUNT = "count"
+AUTH_TYPE = "auth_type"
 
 NAME = "name"
 EMAIL = "email" 
@@ -54,11 +51,11 @@ class MockedDB:
     def __init__(self, app):
         self.app = app
         
-    def app(self):
-        return self.app 
-        
     def Model(self):
         return
+    
+    def app(self):
+        return self.app 
     
     def create_all(self):
         return
@@ -87,7 +84,7 @@ class MockedSocket:
     def on(self):
         return
         
-    def emit(self, channel, data):
+    def emit(self):
         return
         
 class SocketTestCase(unittest.TestCase):
@@ -125,6 +122,15 @@ class SocketTestCase(unittest.TestCase):
             },
         ]
         
+        self.success_test_connect = [
+            {
+                KEY_INPUT: 2,
+                KEY_EXPECTED: {
+                    KEY_COUNT: 2,
+                }
+            },
+        ]
+        
         self.success_test_message_type = [
             {
                 KEY_DATA: { 'message': "https://example.com" },
@@ -142,19 +148,19 @@ class SocketTestCase(unittest.TestCase):
             },
         ]
             
-        self.success_test_google_auth = [
+        self.success_user_to_db = [
             {
                 KEY_DATA: {
                     NAME: "Belle Sune",
                     EMAIL: "example@gmail.com",
-                    IMAGE: "image.jpeg",
-                    LOGIN: True, },
+                    AUTH_TYPE: 'google',
+                    IMAGE: "image.jpeg"},
                 KEY_EXPECTED: {
                     NAME: "Belle Sune",
                     EMAIL: "example@gmail.com",
-                    IMAGE: "image.jpeg",
-                    LOGIN: True, },
-            },
+                    AUTH_TYPE: 'google',
+                    IMAGE: "image.jpeg",},
+            }        
         ]
             
         
@@ -185,12 +191,15 @@ class SocketTestCase(unittest.TestCase):
             'imageUrl': "image.jpeg",
             'successLogin': True,
         })
-        
-    def mocked_emit_all_messages(self, channel):
-        return MockedSocket.emit('new message input', 'message: hello','j')
-        
+    
     def mocked_db(self,app):
         return MockedDB(app)
+        
+    def mocked_socket(self):
+        return MockedSocket('connected', {'test': 'Connected'})
+        
+    def mocked_count_user(self, user, connection):
+        return 0
     
     #############################
     
@@ -214,35 +223,76 @@ class SocketTestCase(unittest.TestCase):
         
             self.assertEqual(response, expected[KEY_DESC])
             
+    def test_on_connect(self):
+        for test in self.success_test_connect:
+            with mock.patch('app.on_connect', self.mocked_socket):
+                response = app.on_connect()
+                expected = test[KEY_EXPECTED]
+        
+            self.assertNotEqual(response, expected[KEY_COUNT])
+            
+    def test_count_user(self):
+        with mock.patch('app.count_user', self.mocked_count_user):
+            response = app.count_user('Lu', 'connected')
     
-                
+        self.assertFalse(response)
+        self.assertEqual(response, 0)
+            
+    # def test_push_new_user_to_db(self):
+    #     for test in self.success_test_connect:
+    #         with mock.patch('app.count_user', self.mocked_push_new_user_to_db):
+    #             response = app.count_user('Lu', 'connected')
+    #             expected = test[KEY_EXPECTED]
+        
+    #         self.assertFalse(response)
+    #         self.assertEqual(response, 0)
+            
+            
     @mock.patch('app.SOCKETIO')
     @mock.patch('app.DB')
     def test_on_new_message(self, mocked_db, mocked_socketio):
-        data = {'message':"Hello there"}
+        data = {'message': "Hello there"}
+        cmd = {'message': "!! about"}
         
-        expected = models.Chatroom('user', 'google', 'Louis','image,png', 'Hello')
-        
-        app.on_new_message(data)
+        expected = models.Chatroom('user', 'google', 'Louis','image.png', 'Hello there')
 
+        app.on_new_message(data)
         mocked_db.session.add.assert_called_once()
         mocked_db.session.commit.assert_called_once()
         
+        msg, _ = mocked_db.session.add.call_args
+        new_msg = msg[0]
+        
+        self.assertEqual(new_msg.message, expected.message)
+        # # self.assertIsNone(added_message_model.message)
+        
+        # mocked_socketio.emit.assert_called_once_with(
+        #     'channel',  
+        #     {'type': 'user', 
+        #     'allAuth': 'google',
+        #     'allUsers': 'Louis',
+        #     'allImages':'image.png',
+        #     'allMessages': "Hello there",
+        #     'user_count': 1,
+        #     })
+        
+        # app.on_new_message(cmd)
     
     @mock.patch('app.DB')
-    def test_db(self, mocked_db):
-        mock_query = mocked_db.session.query.return_value
-        
-        app.on_new_google_user(
-            {'name': 'Louis',
+    def test_on_new_google_user(self, mocked_db):
+        data = {
+            'name': 'Louis',
             'email': 'example@gmail.com',
-            'imageUrl': 'x.jpg',
-            'successLogin': 'True'}
-            
-        )
-            
+            'imageUrl': 'cat.jpg',
+            'successLogin': 'True'
+        }
         
-
+        # mocked_db.session.query.return_value
+        app.on_new_google_user(data)
+        mocked_db.session.commit.assert_called_with()
+        
+        
+        
 
             
         
