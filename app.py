@@ -172,7 +172,7 @@ if __name__ == "__main__":
     init_db(APP)
     SOCKETIO.run(
         APP,
-        host=os.environ("IP", "0.0.0.0"),
-        port=int(os.environ("PORT", 8080)),
+        host=os.getenv("IP", "0.0.0.0"),
+        port=int(os.getenv("PORT", 8080)),
         debug=True,
     )
