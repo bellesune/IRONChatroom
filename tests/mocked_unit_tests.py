@@ -203,14 +203,18 @@ class SocketTestCase(unittest.TestCase):
                 print(response)
         
             self.assertEqual(expected[KEY_MESSAGE_TYPE], expected[KEY_MESSAGE_TYPE])
-    
-    def test_socket_new_msg(self):
-        for test in self.success_test_socket_new_messages:
-            with mock.patch('emit_all_messages', self.mocked_socket_new_messages):
-                response = app.on_new_message(test[KEY_DATA])
-                expected = test[KEY_EXPECTED]
+     
+    # @mock.patch('app.on_new_message')       
+    # def test_socket_new_message(self, mocked_on_new_message):
+    #     mocked_on_new_message.emit = mocked_TODO
+    #     response = app.call_emit()
         
-            self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
+        
+        
+            #     response = app.on_new_message(test[KEY_DATA])
+            #     expected = test[KEY_EXPECTED]
+        
+            # self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
             
             
     # def test_google_auth(self):
