@@ -8,6 +8,7 @@ import bot
 import app
 import models
 from bot import Chatbot
+from models import Chatroom
 
 
 KEY_INPUT = "input"
@@ -41,20 +42,42 @@ class MockedJson:
             
     def json(self):
         return self.json_text
-        
+
 class MockedData:
     def __init__(self, data):
         self.data = data
-        
-    def getData(self):
+    
+    def get_data(self):
         return self.data
         
 class MockedDB:
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, app):
+        self.app = app
         
-    def getData(self):
-        return self.data
+    def app(self):
+        return self.app 
+        
+    def Model(self):
+        return
+    
+    def create_all(self):
+        return
+    
+    def session(self):
+        return
+        
+class MockedSession:
+    def __init__(self):
+        return
+    
+    def commit(self):
+        return
+    
+    def query(self):
+        return
+    
+    def add(self):
+        return
         
 class MockedSocket:
     def __init__(self, channel, data):
@@ -62,10 +85,10 @@ class MockedSocket:
         self.data = data
         
     def on(self):
-        return self.channel
+        return
         
-    def emit(self):
-        return self.data
+    def emit(self, channel, data):
+        return
         
 class SocketTestCase(unittest.TestCase):
     
@@ -152,8 +175,8 @@ class SocketTestCase(unittest.TestCase):
     def mocked_socket_new_messages(self, data):
         return MockedSocket(
             'new message input',
-            { 'message': "Hello everyone"
-        })
+            { 'message': "Hello everyone" }
+        )
         
     def mocked_google_auth(self, data):
         return MockedData({
@@ -162,6 +185,14 @@ class SocketTestCase(unittest.TestCase):
             'imageUrl': "image.jpeg",
             'successLogin': True,
         })
+        
+    def mocked_emit_all_messages(self, channel):
+        return MockedSocket.emit('new message input', 'message: hello','j')
+        
+    def mocked_db(self,app):
+        return MockedDB(app)
+    
+    #############################
     
     def test_bot_command_funtranslate(self):
         for test in self.success_test_translation:
@@ -182,23 +213,81 @@ class SocketTestCase(unittest.TestCase):
                 expected = test[KEY_EXPECTED]
         
             self.assertEqual(response, expected[KEY_DESC])
-        
-    def test_socket_new_message(self):
-        for test in self.success_test_socket_new_messages:
-            with mock.patch('app.SOCKETIO', self.mocked_socket_new_messages):
-                response = app.on_new_message(test[KEY_DATA])
-                expected = test[KEY_EXPECTED]
-        
-            self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
             
-    def test_message_type(self):
-        for test in self.success_test_message_type:
-            with mock.patch('app.SOCKETIO', self.mocked_socket_new_messages):
-                response = app.on_new_message(test[KEY_DATA])
-                expected = test[KEY_EXPECTED]
+    
+                
+    @mock.patch('app.SOCKETIO')
+    @mock.patch('app.DB')
+    def test_on_new_message(self, mocked_db, mocked_socketio):
+        data = {'message':"Hello there"}
+        
+        expected = models.Chatroom('user', 'google', 'Louis','image,png', 'Hello')
+        
+        app.on_new_message(data)
+
+        mocked_db.session.add.assert_called_once()
+        mocked_db.session.commit.assert_called_once()
+        
+    
+    @mock.patch('app.DB')
+    def test_db(self, mocked_db):
+        mock_query = mocked_db.session.query.return_value
+        
+        app.on_new_google_user(
+            {'name': 'Louis',
+            'email': 'example@gmail.com',
+            'imageUrl': 'x.jpg',
+            'successLogin': 'True'}
+            
+        )
+            
+        
+
+
+            
+        
+    # def test_socket_new_message(self):
+    #     for test in self.success_test_socket_new_messages:
+    #         with mock.patch('app.on_new_message', self.mocked_socket_new_messages):
+    #             response = self.mocked_socket_new_messages(test[KEY_DATA])
+    #             expected = test[KEY_EXPECTED]
+                
+    #             print(response)
+             
+        
+    #         self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
+            
+    # def test_emit_all_messages(self):
+    #     with mock.patch('app.emit_all_messages', self.mocked_emit_all_messages):
+    #         response = self.mocked_emit_all_messages('channel')
+            
+            
+    #         print(response)
+         
+    
+    #     self.assertEqual(response, "hello")
+        
+    
+        
+    # def test_message_type(self):
+    #     for test in self.success_test_message_type:
+    #         with mock.patch('app.SOCKETIO', self.mocked_socket_new_messages):
+    #             response = app.on_new_message(test[KEY_DATA])
+    #             expected = test[KEY_EXPECTED]
    
-            self.assertEqual(expected[KEY_MESSAGE_TYPE], expected[KEY_MESSAGE_TYPE])
+    #         self.assertEqual(expected[KEY_MESSAGE_TYPE], expected[KEY_MESSAGE_TYPE])
+            
+            
+    
+    # @mock.patch('flask_socketio.SOCKETIO.emit')
+    
+    # @mock.patch('app.SOCKETIO.on')
+    # def test_new_message(self, mocked_on_new_message):
+    #     data = { 'message': "Hello"}
+    #     app.on_new_message(data)
+    #     mocked_on_new_message.assert_called_once_with({ 'message': "Hello everyone"})
      
+    #     self.assertEqual()
     
     # @mock.patch('app.on_new_message')       
     # def test_socket_new_message(self, mocked_on_new_message):
@@ -218,6 +307,10 @@ class SocketTestCase(unittest.TestCase):
     #             expected = test[KEY_EXPECTED]
         
     #         self.assertEqual(response, expected)
+    
+    # @mock.patch('app.SOCKETIO')
+    # def test_emit_all_messages(self, mocked_socket_new_messages):
+    #     mocked_socket_new_messages.emit
     
 
         
