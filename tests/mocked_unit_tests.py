@@ -7,7 +7,7 @@ import unittest.mock as mock
 import app
 import models
 from bot import Chatbot
-
+from models import AuthUser
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
@@ -61,11 +61,11 @@ class MockedDB:
         return
     
     def session(self):
-        return
+        return MockedSession(self.app)
         
 class MockedSession:
-    def __init__(self):
-        return
+    def __init__(self,data):
+        self.data = data
     
     def commit(self):
         return
@@ -150,7 +150,7 @@ class SocketTestCase(unittest.TestCase):
             
         self.success_user_to_db = [
             {
-                KEY_DATA: {
+                KEY_INPUT: {
                     NAME: "Belle Sune",
                     EMAIL: "example@gmail.com",
                     AUTH_TYPE: 'google',
@@ -191,17 +191,15 @@ class SocketTestCase(unittest.TestCase):
             'imageUrl': "image.jpeg",
             'successLogin': True,
         })
-    
+        
+    def mocked_count_user(self, user, connection):
+        return 0
+        
     def mocked_db(self,app):
         return MockedDB(app)
         
     def mocked_socket(self):
         return MockedSocket('connected', {'test': 'Connected'})
-        
-    def mocked_count_user(self, user, connection):
-        return 0
-    
-    #############################
     
     def test_bot_command_funtranslate(self):
         for test in self.success_test_translation:
@@ -236,24 +234,22 @@ class SocketTestCase(unittest.TestCase):
             response = app.count_user('Lu', 'connected')
     
         self.assertFalse(response)
-        self.assertEqual(response, 0)
+        self.assertNotEqual(response, 6)
             
-    # def test_push_new_user_to_db(self):
-    #     for test in self.success_test_connect:
-    #         with mock.patch('app.count_user', self.mocked_push_new_user_to_db):
-    #             response = app.count_user('Lu', 'connected')
-    #             expected = test[KEY_EXPECTED]
+    def test_push_new_user_to_db(self):
+        for test in self.success_user_to_db:
+            with mock.patch('app.push_new_user_to_db', self.mocked_db):
+                response = app.push_new_user_to_db(test[KEY_INPUT])
+                expected = test[KEY_EXPECTED]
         
-    #         self.assertFalse(response)
-    #         self.assertEqual(response, 0)
-            
+            self.assertIsNot(response, expected['email'])
+        
             
     @mock.patch('app.SOCKETIO')
     @mock.patch('app.DB')
     def test_on_new_message(self, mocked_db, mocked_socketio):
         data = {'message': "Hello there"}
-        cmd = {'message': "!! about"}
-        
+
         expected = models.Chatroom('user', 'google', 'Louis','image.png', 'Hello there')
 
         app.on_new_message(data)
@@ -281,17 +277,23 @@ class SocketTestCase(unittest.TestCase):
     @mock.patch('app.DB')
     def test_on_new_google_user(self, mocked_db):
         data = {
-            'name': 'Louis',
+            'name': 'Fendi',
             'email': 'example@gmail.com',
             'imageUrl': 'cat.jpg',
             'successLogin': 'True'
         }
         
-        # mocked_db.session.query.return_value
+        expected = models.AuthUser( 'Fendi', 'dog.jpg', 'Google', 'fendi@gmail.com')
         app.on_new_google_user(data)
-        mocked_db.session.commit.assert_called_with()
         
+        mocked_db.session.add.assert_called_once()
+        mocked_db.session.commit.assert_called_once()
         
+        msg, _ = mocked_db.session.add.call_args
+        new_msg = msg[0]
+        
+        self.assertEqual(new_msg.name, expected.name)
+        self.assertEqual(new_msg.auth_type, expected.auth_type)
         
 
             
