@@ -16,10 +16,16 @@ export default function Button({ text }) {
   login();
 
   const handleSubmit = () => {
-    if (isLoggedIn === true) {
-      Socket.emit('new message input', {
-        message: newText,
+    if (isLoggedIn === false) {
+      alert("Please logged with Google first!");
+    }
+    else {
+      console.log(`User added a message "${newText}"`);
+   
+      Socket.emit('new message input', { 
+        'message': newText
       });
+      console.log(`Sent the message "${newText}" to the server`);  
     }
   };
 
