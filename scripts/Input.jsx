@@ -1,6 +1,7 @@
-import React, { Button } from 'react';
+import * as React from 'react';
+import { Button } from "./Button";
 
-export default function Input() {
+export function Input() {
   const [text, setText] = React.useState('');
 
   const handleText = (event) => {
