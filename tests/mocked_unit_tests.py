@@ -191,10 +191,13 @@ class SocketTestCase(unittest.TestCase):
             'imageUrl': "image.jpeg",
             'successLogin': True,
         })
+    
+    def mocked_index(self):
+        return "index.html"
         
     def mocked_count_user(self, user, connection):
         return 0
-        
+    
     def mocked_db(self,app):
         return MockedDB(app)
         
@@ -231,23 +234,16 @@ class SocketTestCase(unittest.TestCase):
             
     def test_count_user(self):
         with mock.patch('app.count_user', self.mocked_count_user):
-            response = app.count_user('Lu', 'connected')
+            response1 = app.count_user('Lu', 'connected')
+            response2 = app.count_user('Lu', 'disconnected')
     
-        self.assertFalse(response)
-        self.assertNotEqual(response, 6)
-            
-    def test_push_new_user_to_db(self):
-        for test in self.success_user_to_db:
-            with mock.patch('app.push_new_user_to_db', self.mocked_db):
-                response = app.push_new_user_to_db(test[KEY_INPUT])
-                expected = test[KEY_EXPECTED]
-        
-            self.assertIsNot(response, expected['email'])
-        
+        self.assertEqual(response1, response2)
+        self.assertFalse(response1)
+        self.assertNotEqual(response2, 1)
             
     @mock.patch('app.SOCKETIO')
     @mock.patch('app.DB')
-    def test_on_new_message(self, mocked_db, mocked_socketio):
+    def test_on_new_message(self, mocked_db, mocked_socket):
         data = {'message': "Hello there"}
 
         expected = models.Chatroom('user', 'google', 'Louis','image.png', 'Hello there')
@@ -260,19 +256,12 @@ class SocketTestCase(unittest.TestCase):
         new_msg = msg[0]
         
         self.assertEqual(new_msg.message, expected.message)
-        # # self.assertIsNone(added_message_model.message)
         
-        # mocked_socketio.emit.assert_called_once_with(
-        #     'channel',  
-        #     {'type': 'user', 
-        #     'allAuth': 'google',
-        #     'allUsers': 'Louis',
-        #     'allImages':'image.png',
-        #     'allMessages': "Hello there",
-        #     'user_count': 1,
-        #     })
+    def test_init(self):
+        with mock.patch('app.init_db', self.mocked_db):
+            response = app.init_db(app)
         
-        # app.on_new_message(cmd)
+        self.assertTrue(response)
     
     @mock.patch('app.DB')
     def test_on_new_google_user(self, mocked_db):
@@ -283,7 +272,7 @@ class SocketTestCase(unittest.TestCase):
             'successLogin': 'True'
         }
         
-        expected = models.AuthUser( 'Fendi', 'dog.jpg', 'Google', 'fendi@gmail.com')
+        expected = models.AuthUser( 'Fendi', 'fendi@gmail.com', 'Google', 'dog.jpg')
         app.on_new_google_user(data)
         
         mocked_db.session.add.assert_called_once()
@@ -295,75 +284,39 @@ class SocketTestCase(unittest.TestCase):
         self.assertEqual(new_msg.name, expected.name)
         self.assertEqual(new_msg.auth_type, expected.auth_type)
         
+    def test_push_new_user_to_db(self):
+        for test in self.success_user_to_db:
+            with mock.patch('app.push_new_user_to_db', self.mocked_db):
+                response = app.push_new_user_to_db(test[KEY_INPUT])
+                expected = test[KEY_EXPECTED]
+        
+            self.assertIsNot(response, expected['email'])
+        
+    @mock.patch('app.SOCKETIO')
+    @mock.patch('app.DB')
+    def test_on_new_message_html(self, mocked_db, mocked_socket):
+        data = {
+            'message': "https://example.com"
+        }
 
-            
-        
-    # def test_socket_new_message(self):
-    #     for test in self.success_test_socket_new_messages:
-    #         with mock.patch('app.on_new_message', self.mocked_socket_new_messages):
-    #             response = self.mocked_socket_new_messages(test[KEY_DATA])
-    #             expected = test[KEY_EXPECTED]
-                
-    #             print(response)
-             
-        
-    #         self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
-            
-    # def test_emit_all_messages(self):
-    #     with mock.patch('app.emit_all_messages', self.mocked_emit_all_messages):
-    #         response = self.mocked_emit_all_messages('channel')
-            
-            
-    #         print(response)
-         
-    
-    #     self.assertEqual(response, "hello")
-        
-    
-        
-    # def test_message_type(self):
-    #     for test in self.success_test_message_type:
-    #         with mock.patch('app.SOCKETIO', self.mocked_socket_new_messages):
-    #             response = app.on_new_message(test[KEY_DATA])
-    #             expected = test[KEY_EXPECTED]
-   
-    #         self.assertEqual(expected[KEY_MESSAGE_TYPE], expected[KEY_MESSAGE_TYPE])
-            
-            
-    
-    # @mock.patch('flask_socketio.SOCKETIO.emit')
-    
-    # @mock.patch('app.SOCKETIO.on')
-    # def test_new_message(self, mocked_on_new_message):
-    #     data = { 'message': "Hello"}
-    #     app.on_new_message(data)
-    #     mocked_on_new_message.assert_called_once_with({ 'message': "Hello everyone"})
-     
-    #     self.assertEqual()
-    
-    # @mock.patch('app.on_new_message')       
-    # def test_socket_new_message(self, mocked_on_new_message):
-    #     mocked_on_new_message.emit = mocked_TODO
-    #     response = app.call_emit()
+        expected = models.Chatroom('html', 'google', 'Louis','image.png', 'https://example.com')
 
-    #     response = app.on_new_message(test[KEY_DATA])
-    #     expected = test[KEY_EXPECTED]
-
-    # self.assertEqual(test[KEY_DATA]['message'], expected[KEY_MESSAGE])
-    
-            
-    # def test_google_auth(self):
-    #     for test in self.success_test_google_auth:
-    #         with mock.patch('app.SOCKETIO', self.mocked_google_auth):
-    #             response = app.on_new_google_user(test[KEY_DATA])
-    #             expected = test[KEY_EXPECTED]
+        app.on_new_message(data)
+        mocked_db.session.add.assert_called_once()
+        mocked_db.session.commit.assert_called_once()
         
-    #         self.assertEqual(response, expected)
-    
-    # @mock.patch('app.SOCKETIO')
-    # def test_emit_all_messages(self, mocked_socket_new_messages):
-    #     mocked_socket_new_messages.emit
-    
+        msg, _ = mocked_db.session.add.call_args
+        new_msg = msg[0]
+        
+        self.assertEqual(new_msg.message, expected.message)
+        self.assertEqual(new_msg.role_type, expected.role_type)
+      
+    def test_index(self):
+        with mock.patch('app.index', self.mocked_index):
+            response = app.index()
+        
+        self.assertTrue(response)
+        self.assertEqual('index.html', response)
 
         
 if __name__ == '__main__':
