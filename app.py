@@ -153,7 +153,7 @@ def on_new_google_user(data):
     ISLOGGEDIN = data["successLogin"]
     AUTH = "Google"
 
-    SOCKETIO.emit("login successful", {"ISLOGGEDIN": ISLOGGEDIN})
+    SOCKETIO.emit("login successful", {"isLoggedIn": ISLOGGEDIN})
 
     count_user(USERNAME, "connected")
 

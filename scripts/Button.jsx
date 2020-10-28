@@ -8,7 +8,7 @@ export default function Button({ text }) {
   function login() {
     React.useEffect(() => {
       Socket.on('login successful', (data) => {
-        setIsLoggedIn(data.isLoggedIn);
+        setIsLoggedIn(data['isLoggedIn']);
       });
     });
   }
