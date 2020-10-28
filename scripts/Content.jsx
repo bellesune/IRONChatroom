@@ -1,7 +1,10 @@
-import React, { Message, Input, GoogleButton } from 'react';
+import * as React from 'react';
+import { Input } from './Input';
+import { Message } from './Message';
 import { Socket } from './Socket';
+import { GoogleButton } from './GoogleButton';
 
-export default function Content() {
+export function Content() {
   const [type, setType] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [images, setImages] = React.useState([]);

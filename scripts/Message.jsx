@@ -1,6 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 
-export default function Message({
+export function Message({
   type, users, images, messages,
 }) {
   const newMessages = [];

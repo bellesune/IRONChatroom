@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { GoogleLogin } from 'react-google-login';
 import { Socket } from './Socket';
+import { GoogleLogin } from 'react-google-login';
 
 function handleGoogleOAuthLogin(response) {
   const { name } = response.profileObj;
@@ -17,7 +17,7 @@ function handleGoogleOAuthLogin(response) {
 
 function handleOnFailure() {}
 
-export default function GoogleButton() {
+export function GoogleButton() {
   return (
     <GoogleLogin
       clientId="836600659281-eeutvpmf60kb2f2jfhcju5kfnebbsuu2.apps.googleusercontent.com"

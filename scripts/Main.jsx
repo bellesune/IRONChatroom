@@ -1,4 +1,6 @@
-import ReactDOM from 'react-dom';
-import React, { Content } from 'react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
+import { Content } from './Content';
 
 ReactDOM.render(<Content />, document.getElementById('content'));
