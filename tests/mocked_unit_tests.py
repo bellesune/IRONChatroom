@@ -1,13 +1,14 @@
 """ Use mock to test socket, db, api """
+from os.path import dirname, join
+import sys
+sys.path.append(join(dirname(__file__), "../"))
 import unittest
 import unittest.mock as mock
 import app
 import models
 from bot import Chatbot
 from models import AuthUser
-from os.path import dirname, join
-import sys
-sys.path.append(join(dirname(__file__), "../"))
+
 
 
 KEY_INPUT = "input"
