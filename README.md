@@ -1,4 +1,4 @@
-## A chatroom that assissted by a chatbot that is accessible by anyone
+# A chatroom that assissted by a chatbot that is accessible by anyone
 
 1. Create a developer account on Marvel to get the access keys. [Sign-up here!](https://www.marvel.com/signin?referer=https%3A%2F%2Fdeveloper.marvel.com%2Faccount)
     __Important:__ Keep your access keys and tokens safely hidden. Treat them like your passwords.
